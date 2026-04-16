@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <style media="screen">
+    .market-update-block {
+      padding: 1.5rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px 0 rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #edf2f7;
+    }
+
+    .market-update-block:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px 0 rgba(0,0,0,0.1);
+    }
+
+    .market-update-block h3 {
+      color: #2d3748;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .market-update-block h4 {
+      font-size: 0.9rem;
+      color: #718096;
+      margin: 4px 0 0 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .market-update-right i {
+      font-size: 2.5rem;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+
+    /* Card 1: Customers - Soft Green/Blue */
+    .clr-block-1 .market-update-right i {
+      color: #38a169;
+      background: #f0fff4;
+    }
+
+    /* Card 2: Products - Soft Orange */
+    .clr-block-2 .market-update-right i {
+      color: #dd6b20;
+      background: #fffaf0;
+    }
+
+    /* Card 3: Orders - Soft Blue */
+    .clr-block-3 .market-update-right i {
+      color: #3182ce;
+      background: #ebf8ff;
+    }
+
+    .market-update-left {
+      padding: 0;
+    }
+    
+    .row {
+      margin-right: -15px;
+      margin-left: -15px;
+    }
+    
+    .col-md-4 {
+      padding: 0 15px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="market-update-block clr-block-1">
+          <div class="market-update-left">
+            <h3>{{customercount}}</h3>
+            <h4>Total Customers</h4>
+          </div>
+          <div class="market-update-right">
+            <i class="fa fa-users"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="market-update-block clr-block-2">
+          <div class="market-update-left">
+            <h3>{{productcount}}</h3>
+            <h4>Total Products</h4>
+          </div>
+          <div class="market-update-right">
+            <i class="fa fa-shopping-bag"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="market-update-block clr-block-3">
+          <div class="market-update-left">
+            <h3>{{ordercount}}</h3>
+            <h4>Total Orders</h4>
+          </div>
+          <div class="market-update-right">
+            <i class="fa fa-shopping-cart"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<!--
+  -->
+
+</html>
+
+

@@ -1,0 +1,180 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .alert-modern {
+    background-color: #fff;
+    border: none;
+    border-left: 5px solid #f59e0b;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .alert-modern strong {
+    color: #92400e;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .alert-modern ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+  .alert-modern li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #fef3c7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .alert-modern li:last-child {
+    border-bottom: none;
+  }
+  .alert-modern a {
+    color: #1e293b;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .alert-modern a:hover {
+    color: #2563eb;
+  }
+
+  .panel-modern {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  .panel-modern .panel-heading {
+    background: #fff;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .panel-modern .panel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .table-modern {
+    margin-bottom: 0;
+  }
+  .table-modern thead th {
+    background: #f8fafc;
+    border-top: none;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+  }
+  .table-modern tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 0.9375rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .table-modern tbody tr:hover {
+    background-color: #f8fafc;
+  }
+  .product-img {
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .badge-modern {
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+  .badge-pending { background-color: #ebf8ff; color: #3182ce; }
+  .badge-delivered { background-color: #f0fff4; color: #38a169; }
+  .badge-warning { background-color: #fffaf0; color: #dd6b20; }
+  .badge-danger { background-color: #fff5f5; color: #e53e3e; }
+  .badge-info { background-color: #ebf8ff; color: #3182ce; }
+</style>
+
+<div class="container py-4">
+  {% include 'ecom/admin_dashboard_cards.html' %}
+
+  {% if low_stock_products %}
+  <div class="alert-modern">
+    <strong><i class="fa fa-exclamation-triangle"></i> Low Stock Alert</strong>
+    The following products have 5 or fewer items left:
+    <ul>
+      {% for p in low_stock_products %}
+        <li>
+          <span><a href="/update-product/{{ p.id }}">{{ p.name }}</a> &mdash; {{ p.stock }} left</span>
+          {% if p.stock == 0 %}
+            <span class="badge badge-danger">OUT OF STOCK</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <div class="panel-modern">
+    <div class="panel-heading">
+      <h3 class="panel-title">Recent Bookings</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Address</th>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product,customer,order in data %}
+          <tr>
+            {% for c in customer %}
+            <td><div style="font-weight: 600;">{{c.get_name}}</div></td>
+            <td>{{c.mobile}}</td>
+            <td>{{order.address}}</td>
+            {% endfor %}
+            {% for p in product %}
+            <td>{{p.name}}</td>
+            <td>
+              {% if p.product_image %}
+                <img src="{{ p.product_image.url }}" class="product-img" height="45" width="45" />
+              {% else %}
+                <img src="{% static 'images/success.png' %}" class="product-img" height="45" width="45" />
+              {% endif %}
+            </td>
+
+            <td>
+              {% if order.status == 'Pending'%}
+                <span class="badge-modern badge-pending">{{order.status}}</span>
+              {% elif order.status == 'Delivered' %}
+                <span class="badge-modern badge-delivered">{{order.status}}</span>
+              {% elif order.status == 'Out for Delivery' or order.status == 'Return Requested' %}
+                <span class="badge-modern badge-warning">{{order.status}}</span>
+              {% elif order.status == 'Cancelled' or order.status == 'Cancellation Requested' %}
+                <span class="badge-modern badge-danger">{{order.status}}</span>
+              {% else %}
+                <span class="badge-modern badge-info">{{order.status}}</span>
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}

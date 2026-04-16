@@ -1,0 +1,213 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .panel-modern {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+  .panel-modern .panel-heading {
+    background: #fff;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .panel-modern .panel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .table-modern {
+    margin-bottom: 0;
+  }
+  .table-modern thead th {
+    background: #f8fafc;
+    border-top: none;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+  }
+  .table-modern tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 0.9375rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .table-modern tbody tr:hover {
+    background-color: #f8fafc;
+  }
+  .product-img {
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .badge-modern {
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+  .badge-pending { background-color: #ebf8ff; color: #3182ce; }
+  .badge-delivered { background-color: #f0fff4; color: #38a169; }
+  .badge-warning { background-color: #fffaf0; color: #dd6b20; }
+  .badge-danger { background-color: #fff5f5; color: #e53e3e; }
+  .badge-info { background-color: #ebf8ff; color: #3182ce; }
+  .badge-primary { background-color: #eef2ff; color: #4f46e5; }
+
+  .filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    background: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+  }
+  .form-select-modern {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-select-modern:focus {
+    border-color: #2563eb;
+  }
+  .btn-export {
+    background: #059669;
+    color: white !important;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+  }
+  .btn-export:hover {
+    background: #047857;
+    transform: translateY(-1px);
+  }
+  .btn-action {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  .btn-edit { background: #eff6ff; color: #2563eb; }
+  .btn-edit:hover { background: #dbeafe; }
+  .btn-delete { background: #fef2f2; color: #dc2626; }
+  .btn-delete:hover { background: #fee2e2; }
+</style>
+
+<div class="container py-4">
+  <div class="filter-container">
+    <form method="GET" action="{% url 'admin-view-booking' %}" class="m-0">
+      <div class="d-flex align-items-center">
+        <label class="mr-3 mb-0 text-muted font-weight-600 small uppercase letter-spacing-05">Filter Status:</label>
+        <select name="status_filter" class="form-select-modern" onchange="this.form.submit()">
+          <option value="">All Orders</option>
+          <option value="Pending" {% if request.GET.status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+          <option value="Order Confirmed" {% if request.GET.status_filter == 'Order Confirmed' %}selected{% endif %}>Confirmed</option>
+          <option value="Out for Delivery" {% if request.GET.status_filter == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
+          <option value="Delivered" {% if request.GET.status_filter == 'Delivered' %}selected{% endif %}>Delivered</option>
+        </select>
+      </div>
+    </form>
+
+    <a href="{% url 'export-orders-csv' %}" class="btn-export">
+      <i class="fa fa-download"></i> Export CSV
+    </a>
+  </div>
+
+  <div class="panel-modern">
+    <div class="panel-heading">
+      <h3 class="panel-title">Total Orders</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Address</th>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Reason</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product,customer,order in data %}
+          <tr>
+            {% for c in customer %}
+            <td><div style="font-weight: 600;">{{c.get_name}}</div></td>
+            <td>{{c.mobile}}</td>
+            <td><div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{order.address}}</div></td>
+            {% endfor %}
+            {% for p in product %}
+            <td>{{p.name}}</td>
+            <td>
+              {% if p.product_image %}
+                <img src="{{ p.product_image.url }}" class="product-img" height="40" width="40" />
+              {% else %}
+                <img src="{% static 'images/success.png' %}" class="product-img" height="40" width="40" />
+              {% endif %}
+            </td>
+            <td><div class="text-muted small">{{ order.order_date|date:"M j, Y" }}</div></td>
+            <td>
+              {% if order.status == 'Pending' %}
+                <span class="badge-modern badge-pending">{{order.status}}</span>
+              {% elif order.status == 'Order Confirmed' %}
+                <span class="badge-modern badge-primary">{{order.status}}</span>
+              {% elif order.status == 'Out for Delivery' or order.status == 'Return Requested' %}
+                <span class="badge-modern badge-warning">{{order.status}}</span>
+              {% elif order.status == 'Delivered' %}
+                <span class="badge-modern badge-delivered">{{order.status}}</span>
+              {% elif order.status == 'Cancelled' or order.status == 'Cancellation Requested' %}
+                <span class="badge-modern badge-danger">{{order.status}}</span>
+              {% else %}
+                <span class="badge-modern badge-info">{{order.status}}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if order.cancellation_reason or order.return_reason %}
+                <div class="text-danger small" style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  {{ order.cancellation_reason }}{{ order.return_reason }}
+                </div>
+              {% else %}
+                <span class="text-muted small">-</span>
+              {% endif %}
+            </td>
+            <td class="text-center">
+              <a href="{% url 'update-order' order.id %}" class="btn-action btn-edit mr-2" title="Update Status"><i class="fa fa-refresh"></i></a>
+              <a href="{% url 'delete-order' order.id %}" class="btn-action btn-delete" title="Delete"><i class="fa fa-trash"></i></a>
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+

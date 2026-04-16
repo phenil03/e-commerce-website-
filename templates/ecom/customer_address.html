@@ -1,0 +1,294 @@
+{% extends 'ecom/customer_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+<style type="text/css">
+    :root {
+        --primary: #2F4550;
+        --secondary: #586F7C;
+        --accent: #B8DBD9;
+        --bg: #F4F4F9;
+        --white: #FFFFFF;
+        --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    body { background-color: var(--bg); font-family: 'Roboto', sans-serif; }
+    
+    .checkout-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .address-card {
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+    }
+
+    .card-header {
+        background: var(--primary);
+        color: #fff;
+        padding: 18px 25px;
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .saved-address-content {
+        padding: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .user-info {
+        font-weight: 800;
+        margin-bottom: 8px;
+        color: var(--primary);
+        font-size: 16px;
+    }
+
+    .home-label {
+        background: var(--bg);
+        color: var(--secondary);
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 4px;
+        margin-left: 12px;
+        font-weight: 700;
+        border: 1px solid #ddd;
+    }
+
+    .address-text {
+        font-size: 14px;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .btn-change {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 8px 25px;
+        font-weight: 800;
+        border-radius: 6px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-size: 12px;
+        transition: all 0.2s;
+    }
+
+    .btn-change:hover {
+        background: var(--primary);
+        color: #fff;
+    }
+
+    .form-container {
+        padding: 30px;
+        background: #fff;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        color: var(--secondary);
+        margin-bottom: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+
+    .btn-pay {
+        background: #fb641b; /* Keeping accent orange for conversion */
+        color: #fff;
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 16px;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(251, 100, 27, 0.2);
+        transition: transform 0.2s;
+    }
+
+    .btn-pay:hover { 
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(251, 100, 27, 0.3);
+    }
+
+    /* New Pill Design Styles */
+    .pill-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    .total-pill {
+        background: #fff;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 12px 35px;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 16px;
+        min-width: 180px;
+        text-align: center;
+    }
+
+    .purchase-pill {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        padding: 14px 45px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .purchase-pill:hover {
+        background: var(--secondary);
+        transform: scale(1.03);
+    }
+
+    .hidden { display: none; }
+</style>
+
+<div class="checkout-container">
+    {% if not product_in_cart %}
+        <div class="address-card" style="padding:40px; text-align:center;">
+             <h2 style="color:#d32f2f;"><i class="fa fa-shopping-cart"></i> Your cart is empty</h2>
+             <br>
+             <a href="/" class="btn-change" style="text-decoration:none;">Go Shopping</a>
+        </div>
+    {% else %}
+        <div class="address-card">
+            <div class="card-header">
+                1. Delivery Address
+            </div>
+
+            {% if has_saved_address %}
+            <!-- Saved Address View -->
+            <div id="saved-address-view" class="saved-address-content">
+                <div>
+                    <div class="user-info">
+                        {{ user.first_name }} {{ user.last_name }} <span class="home-label">HOME</span>
+                    </div>
+                    <div class="address-text">
+                        {{ addressForm.Address.value }}<br>
+                        <strong>Phone:</strong> {{ addressForm.Mobile.value }}<br>
+                        <strong>Email:</strong> {{ addressForm.Email.value }}
+                    </div>
+                </div>
+                <button type="button" class="btn-change" onclick="toggleEdit()">Change</button>
+            </div>
+            {% endif %}
+
+            <!-- Form View -->
+            <div id="address-form-container" class="form-container {% if has_saved_address %}hidden{% endif %}">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Email ID</label>
+                                {% render_field addressForm.Email class="form-control" placeholder="Email" %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                {% render_field addressForm.Mobile class="form-control" placeholder="10-digit mobile number" %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery Address</label>
+                        {% render_field addressForm.Address class="form-control" placeholder="House No, Road, Area, City, State, PIN" style="height:100px; resize:none;" %}
+                    </div>
+
+                    <button type="submit" class="btn-pay">SAVE AND DELIVER HERE</button>
+                    
+                    {% if has_saved_address %}
+                    <p style="margin-top: 15px; text-align: center;">
+                        <a href="javascript:void(0)" onclick="toggleEdit()" style="color:#2874f0; font-size:12px; font-weight:600; text-decoration:none;">CANCEL</a>
+                    </p>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        {% if has_saved_address %}
+        <div class="address-card" id="quick-pay-bar" style="border:none; box-shadow:none; background:transparent;">
+             <div class="pill-container">
+                <!-- Total Pill -->
+                <div class="total-pill">
+                    Total: {{ total }}
+                </div>
+
+                <!-- Purchase Pill Form -->
+                <form method="post" style="margin:0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="Email" value="{% if addressForm.Email.value %}{{ addressForm.Email.value }}{% else %}{{ user.email }}{% endif %}">
+                    <input type="hidden" name="Mobile" value="{% if addressForm.Mobile.value %}{{ addressForm.Mobile.value }}{% else %}{{ addressForm.initial.Mobile }}{% endif %}">
+                    <input type="hidden" name="Address" value="{% if addressForm.Address.value %}{{ addressForm.Address.value }}{% else %}{{ addressForm.initial.Address }}{% endif %}">
+                    
+                    <button type="submit" class="purchase-pill">
+                        Purchase <i class="fa fa-chevron-right" style="font-size: 12px; margin-top: 2px;"></i>
+                    </button>
+                </form>
+             </div>
+        </div>
+        {% endif %}
+
+    {% endif %}
+</div>
+
+<script>
+    function toggleEdit() {
+        var view = document.getElementById('saved-address-view');
+        var form = document.getElementById('address-form-container');
+        var quickPay = document.getElementById('quick-pay-bar');
+
+        if (form.classList.contains('hidden')) {
+            form.classList.remove('hidden');
+            if(view) view.classList.add('hidden');
+            if(quickPay) quickPay.classList.add('hidden');
+        } else {
+            form.classList.add('hidden');
+            if(view) view.classList.remove('hidden');
+            if(quickPay) quickPay.classList.remove('hidden');
+        }
+    }
+</script>
+
+{% endblock content %}

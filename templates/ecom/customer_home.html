@@ -1,0 +1,385 @@
+{% extends 'ecom/customer_base.html' %}
+{% load static %}
+{% block content %}
+
+<style media="screen">
+
+body,html {
+  height: 100%;
+}
+
+.d-flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.align-center {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.flex-centerY-centerX {
+  justify-content: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+body {
+  background-color:#F4F4F9;
+}
+
+.page-wrapper {
+  height: 100%;
+  display: table;
+}
+
+.page-wrapper .page-inner {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.el-wrapper {
+  width: 360px;
+  padding: 15px;
+  margin: 15px auto;
+  background-color: #fff;
+}
+
+/* ============================= */
+/* ORIGINAL COLUMN LEFT UNTOUCHED */
+/* ============================= */
+
+/* ===== NEW PRODUCT GRID FIX ===== */
+
+.product-row{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.product-column{
+  width:33.33%;
+  padding:10px;
+}
+
+@media screen and (max-width:600px){
+  .product-column{
+    width:100%;
+  }
+}
+
+/* ============================= */
+
+  /* ULTIMATE FLIPKART STYLE CARD */
+  .el-wrapper {
+    width: 100%; 
+    max-width: 250px; 
+    margin: 10px auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 420px; 
+    box-shadow: none;
+    border: 1px solid #f0f0f0;
+    transition: box-shadow 0.2s;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .el-wrapper:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  .el-wrapper .box-up {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    display: block; 
+  }
+
+  .img-frame {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* MAXIMIZE IMAGE SIZE */
+  }
+
+  .el-wrapper .img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #fff;
+  }
+
+  .img-info {
+    width: 100%;
+    padding: 12px 12px 4px 12px;
+    text-align: left;
+  }
+
+  .info-inner .p-name {
+    font-size: 15px;
+    color: #212121;
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 40px;
+    line-height: 20px;
+    margin-bottom: 5px;
+  }
+
+  .el-wrapper .box-down {
+    width: 100%;
+    height: auto;
+    padding: 0 12px 15px 12px;
+    margin-top: auto;
+  }
+
+  .cart {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cart .price {
+    font-size: 18px;
+    color: #212121;
+    font-weight: 700;
+  }
+
+  .add-to-cart-btn {
+    background-color: #586F7C;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .add-to-cart-btn:hover {
+    background-color: #2F4550;
+    color: white;
+    text-decoration: none;
+  }
+
+  .category-header {
+    width: 100%;
+    padding: 20px;
+    margin-top: 10px;
+    color: #212121;
+    font-size: 22px;
+    font-weight: 500;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .product-row {
+    background: #fff;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .product-column {
+    width: 20%;
+    padding: 8px;
+  }
+
+  @media screen and (max-width: 1400px) { .product-column { width: 25%; } }
+  @media screen and (max-width: 1100px) { .product-column { width: 33.33%; } }
+  @media screen and (max-width: 800px) { .product-column { width: 50%; } }
+  @media screen and (max-width: 500px) { .product-column { width: 100%; } }
+
+  @media screen and (max-width: 1400px) { .product-column { width: 25%; } }
+  @media screen and (max-width: 992px) { .product-column { width: 33.33%; } }
+  @media screen and (max-width: 768px) { .product-column { width: 50%; } }
+
+  .category-buttons {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    white-space: nowrap;
+    background-color: #232f3e; /* Original dark blue */
+    padding: 8px 10px;
+    margin: 15px 0; /* Still separate from navbar */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .category-buttons::-webkit-scrollbar {
+    display: none;
+  }
+
+  .category-button {
+    background-color: transparent;
+    color: white;
+    border: 1px solid transparent; 
+    padding: 5px 10px;
+    margin: 0 2px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 3px;
+    transition: border 0.2s;
+    font-weight: 500;
+  }
+
+  .category-button:hover, .category-button.active {
+    border: 1px solid white;
+  }
+
+</style>
+
+{% if products %}
+<!-- products data start -->
+
+<div class="category-buttons" style="margin-left:15px; margin-right:15px;">
+  <button class="category-button active" onclick="filterByCategory('all', this)"><span style="font-size: 18px; margin-right: 5px;">&#9776;</span> All</button>
+  {% for category, subcategories in category_data.items %}
+    <button class="category-button" onclick="filterByCategory('{{ category }}', this)">{{ category }}</button>
+  {% endfor %}
+</div>
+
+<div class="product-row">
+  {% for p in products %}
+  <div class="product-column" data-category="{{ p.category }}" data-subcategory="{{ p.subcategory }}">
+    <div class="el-wrapper">
+      <div class="box-up">
+        {% if p.stock <= 0 %}
+        <div style="position: absolute; top: 10px; right: 10px; background: #d9534f; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; z-index: 10; font-size: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">OUT OF STOCK</div>
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.4); z-index: 5;"></div>
+        {% endif %}
+        <a href="{% url 'product-detail' p.id %}" style="display:block;">
+          <div class="img-frame">
+            {% if p.product_image %}
+              <img class="img" src="{{ p.product_image.url }}" alt="{{ p.name }}">
+            {% else %}
+              <img class="img" src="{% static 'images/success.png' %}" alt="No image">        
+            {% endif %}
+          </div>
+        </a>
+      </div>
+
+      <div class="img-info">
+        <div class="info-inner">
+          <a href="{% url 'product-detail' p.id %}" style="text-decoration:none;">        
+            <span class="p-name">{{p.name}}</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="box-down">
+        <div class="cart">
+          <span class="price">&#8377; {{p.price}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- products data end -->
+
+<script>
+  const categoryData = {{ category_data|safe }};
+
+  function filterByCategory(category, btn) {
+    // Update active button state
+    document.querySelectorAll('.category-button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const products = document.querySelectorAll('.product-column');
+    products.forEach(product => {
+      if (category === 'all') {
+        product.style.display = 'block';
+      } else if (product.dataset.category === category) {
+        product.style.display = 'block';
+      } else {
+        product.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+{% else %}
+<h3 style="text-align:center; color:#2f4550; font-weight:bold;">No Search Found</h3>
+{% endif %}
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).on('click', '.add-to-cart', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var $btn = $(this);
+        
+        $btn.css('opacity', '0.7').prop('disabled', true);
+        
+        $.ajax({
+            url: url,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function(data) {
+                if (data.status === 'success') {
+                    var $itemNumber = $('.item-number');
+                    $itemNumber.text(data.cart_count);
+                    
+                    // Trigger pop animation
+                    $itemNumber.addClass('pop');
+                    setTimeout(function() {
+                        $itemNumber.removeClass('pop');
+                    }, 500);
+
+                    // Non-blocking toast at top right
+                    const Toast = Swal.mixin({
+                      toast: true,
+                      position: 'top-end',
+                      showConfirmButton: false,
+                      timer: 3000,
+                      timerProgressBar: true,
+                      didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                      }
+                    })
+
+                    Toast.fire({
+                      icon: 'success',
+                      title: data.message
+                    })
+                }
+                $btn.css('opacity', '1').prop('disabled', false);
+            },
+            error: function() {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#2F4550'
+                });
+                $btn.css('opacity', '1').prop('disabled', false);
+            }
+        });
+    });
+</script>
+{% endblock %}
+

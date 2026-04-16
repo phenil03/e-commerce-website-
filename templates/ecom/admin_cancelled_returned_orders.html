@@ -1,0 +1,172 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .panel-modern {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  .panel-modern .panel-heading {
+    background: #fff;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .panel-modern .panel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .table-modern {
+    margin-bottom: 0;
+  }
+  .table-modern thead th {
+    background: #f8fafc;
+    border-top: none;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+  }
+  .table-modern tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 0.9375rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .table-modern tbody tr:hover {
+    background-color: #f8fafc;
+  }
+  .badge-modern {
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: inline-block;
+  }
+  .badge-danger { background-color: #fff5f5; color: #e53e3e; }
+  .badge-warning { background-color: #fffaf0; color: #dd6b20; }
+  .badge-info { background-color: #ebf8ff; color: #3182ce; }
+  .badge-success { background-color: #f0fff4; color: #38a169; }
+
+  .btn-action-modern {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: none;
+    text-decoration: none !important;
+  }
+  .btn-approve { background: #f0fff4; color: #38a169; }
+  .btn-approve:hover { background: #c6f6d5; }
+  .btn-reject { background: #fffaf0; color: #dd6b20; }
+  .btn-reject:hover { background: #feebc8; }
+  .btn-refund { background: #ebf8ff; color: #3182ce; }
+  .btn-refund:hover { background: #bee3f8; }
+  .btn-delete-modern { 
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2; 
+    color: #dc2626; 
+    border-radius: 8px;
+  }
+  .btn-delete-modern:hover { background: #fee2e2; }
+</style>
+
+<div class="container py-4">
+  <div class="panel-modern">
+    <div class="panel-heading">
+      <h3 class="panel-title">Product Query (Cancelled & Returned)</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Product</th>
+            <th>Status</th>
+            <th>Reason</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product,customer,order in data %}
+          <tr>
+            {% for c in customer %}
+            <td><div style="font-weight: 600;">{{c.get_name}}</div></td>
+            <td>{{c.mobile}}</td>
+            {% endfor %}
+            
+            {% for p in product %}
+            <td>{{p.name}}</td>
+            {% endfor %}
+
+            <td>
+              {% if order.status == 'Cancelled' or order.status == 'Cancellation Requested' %}
+                <span class="badge-modern badge-danger">Cancelled</span>
+              {% elif order.status == 'Return Requested' %}
+                <span class="badge-modern badge-warning">Return Requested</span>
+              {% elif order.status == 'Return Approved' %}
+                <span class="badge-modern badge-info">Return Approved</span>
+              {% elif order.status == 'Return Rejected' %}
+                <span class="badge-modern badge-danger">Return Rejected</span>
+              {% elif order.status == 'Refund Completed' %}
+                <span class="badge-modern badge-success">Refund Completed</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <div class="text-muted small" style="max-width: 200px; font-style: italic;">
+                {% if order.status == 'Return Requested' or order.status == 'Return Approved' or order.status == 'Return Rejected' or order.status == 'Refund Completed' %}
+                  {{order.return_reason}}
+                {% elif order.cancellation_reason %}
+                  {{order.cancellation_reason}}
+                {% else %}
+                  -
+                {% endif %}
+              </div>
+            </td>
+
+            <td class="text-center">
+              <div class="d-flex align-items-center justify-content-center gap-2">
+                {% if order.status == 'Return Requested' %}
+                  <a class="btn-action-modern btn-approve" href="{% url 'admin-approve-return' order.id %}"><i class="fa fa-check"></i> Approve</a>
+                  <a class="btn-action-modern btn-reject" href="{% url 'admin-reject-return' order.id %}"><i class="fa fa-times"></i> Reject</a>
+                {% elif order.status == 'Return Approved' %}
+                  <a class="btn-action-modern btn-refund" href="{% url 'admin-complete-refund' order.id %}"><i class="fa fa-money"></i> Complete Refund</a>
+                {% endif %}
+                <a class="btn-delete-modern ml-2" href="{% url 'delete-order' order.id %}" title="Delete Record"><i class="fa fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-5">
+              <div class="text-muted">
+                <i class="fa fa-search mb-3" style="font-size: 3rem; display: block; opacity: 0.5;"></i>
+                <h4 class="mb-0">No Product Queries Found</h4>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}

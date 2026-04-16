@@ -1,0 +1,105 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .panel-modern {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  .panel-modern .panel-heading {
+    background: #fff;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .panel-modern .panel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .table-modern {
+    margin-bottom: 0;
+  }
+  .table-modern thead th {
+    background: #f8fafc;
+    border-top: none;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+  }
+  .table-modern tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 0.9375rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .table-modern tbody tr:hover {
+    background-color: #f8fafc;
+  }
+  .btn-action {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  .btn-edit { background: #eff6ff; color: #2563eb; }
+  .btn-edit:hover { background: #dbeafe; }
+  .btn-delete { background: #fef2f2; color: #dc2626; }
+  .btn-delete:hover { background: #fee2e2; }
+</style>
+
+<div class="container py-4">
+  <div class="panel-modern">
+    <div class="panel-heading">
+      <h3 class="panel-title">Total Customer List</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Address</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in customers %}
+          <tr>
+            <td><div style="font-weight: 600;">{{c.get_name}}</div></td>
+            <td>{{c.mobile}}</td>
+            <td>{{c.address}}</td>
+            <td class="text-center">
+              <a href="{% url 'update-customer' c.id %}" class="btn-action btn-edit mr-2" title="Edit"><i class="fa fa-edit"></i></a>
+              <a href="{% url 'delete-customer' c.id %}" class="btn-action btn-delete" title="Delete"><i class="fa fa-trash"></i></a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center py-5">
+              <div class="text-muted">
+                <i class="fa fa-users mb-3" style="font-size: 3rem; display: block; opacity: 0.5;"></i>
+                <h4 class="mb-0">No Customers Registered</h4>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+

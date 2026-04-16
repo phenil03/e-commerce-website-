@@ -1,0 +1,361 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    :root {
+        --primary: #2F4550;
+        --secondary: #586F7C;
+        --accent: #B8DBD9;
+        --bg: #F4F4F9;
+        --white: #FFFFFF;
+        --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    body {
+        background-color: var(--bg);
+        font-family: 'Inter', 'Roboto', sans-serif;
+    }
+
+    .analytics-container {
+        padding: 40px 20px;
+        max-width: 1400px;
+        margin: auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .page-title {
+        font-weight: 800;
+        color: var(--primary);
+        margin: 0;
+        font-size: 32px;
+    }
+
+    /* Filter Bar */
+    .filter-card {
+        background: var(--white);
+        padding: 15px 25px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .filter-card input {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 8px 12px;
+        outline: none;
+    }
+
+    .btn-apply {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Stat Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover { transform: translateY(-5px); }
+
+    .stat-card .label {
+        font-size: 11px;
+        color: var(--secondary);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .stat-card .value {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    /* Charts */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .chart-panel {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+    }
+
+    /* Table */
+    .table-panel {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        margin-bottom: 40px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .custom-table th {
+        text-align: left;
+        padding: 15px;
+        border-bottom: 2px solid #f0f0f0;
+        color: var(--secondary);
+        font-size: 13px;
+    }
+
+    .custom-table td {
+        padding: 15px;
+        border-bottom: 1px solid #f9f9f9;
+        font-size: 14px;
+        color: var(--primary);
+    }
+
+    .badge-status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .status-delivered { background: #e6f4ea; color: #1e7e34; }
+    .status-pending { background: #e8f0fe; color: #1355f9; }
+    .status-cancelled { background: #fce8e6; color: #c0392b; }
+
+    @media (max-width: 992px) {
+        .charts-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="analytics-container">
+    
+    <!-- Header & Filter -->
+    <div class="page-header">
+        <h1 class="page-title">Sales & Analytics</h1>
+        <form method="GET" class="filter-card">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label style="font-size:12px; font-weight:600;">FROM:</label>
+                <input type="date" name="from_date" value="{{ from_date }}">
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label style="font-size:12px; font-weight:600;">TO:</label>
+                <input type="date" name="to_date" value="{{ to_date }}">
+            </div>
+            <button type="submit" class="btn-apply">Apply Filter</button>
+            <a href="/admin-analytics" style="font-size:12px; color:var(--secondary); text-decoration:underline;">Reset</a>
+        </form>
+    </div>
+
+    <!-- Key Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="label">Total Revenue</span>
+            <div class="value">₹ {{ total_revenue_stat|default:"0" }}</div>
+        </div>
+        <div class="stat-card">
+            <span class="label">Total Orders</span>
+            <div class="value">{{ total_orders_stat }}</div>
+        </div>
+        <div class="stat-card">
+            <span class="label">Avg Order Value (AOV)</span>
+            <div class="value">₹ {{ avg_order_value }}</div>
+        </div>
+        <div class="stat-card">
+            <span class="label">Total Customers</span>
+            <div class="value">{{ total_customers_stat }}</div>
+        </div>
+    </div>
+
+    <!-- Charts Layer 1 -->
+    <div class="charts-grid">
+        <div class="chart-panel">
+            <div class="section-title">15-Day Revenue Velocity</div>
+            <div style="height: 300px;"><canvas id="revenueTrendChart"></canvas></div>
+        </div>
+        <div class="chart-panel">
+            <div class="section-title">Order Status</div>
+            <div style="height: 300px;"><canvas id="statusDonutChart"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Charts Layer 2 -->
+    <div class="charts-grid">
+        <div class="table-panel" style="margin-bottom:0;">
+            <div class="section-title"><i class="fa fa-trophy"></i> Top Selling Products</div>
+            <table class="custom-table">
+                <thead>
+                    <tr><th>Product</th><th>Sold</th><th>Revenue</th></tr>
+                </thead>
+                <tbody>
+                    {% for p in top_products %}
+                    <tr>
+                        <td style="font-weight:600;">{{ p.product__name }}</td>
+                        <td>{{ p.total_sold }}</td>
+                        <td style="color:#27ae60; font-weight:700;">₹ {{ p.revenue }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="chart-panel">
+            <div class="section-title">Category Revenue</div>
+            <div style="height: 250px;"><canvas id="categoryBarChart"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Detailed Order Table -->
+    <div class="table-panel" style="margin-top:25px;">
+        <div class="section-title"><i class="fa fa-list"></i> Detailed Order Report</div>
+        <div style="overflow-x: auto;">
+            <table class="custom-table" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>#{{ order.id }}</strong></td>
+                        <td>{{ order.customer.get_name|default:"N/A" }}</td>
+                        <td>{{ order.order_date|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="badge-status 
+                                {% if order.status == 'Delivered' %}status-delivered
+                                {% elif order.status == 'Pending' %}status-pending
+                                {% elif order.status == 'Cancelled' %}status-cancelled
+                                {% else %}status-pending{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td style="font-weight:700;">₹ {{ order.total_amount }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--secondary);">No orders found for this period</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<br><br>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Status Donut
+    var ctxStatus = document.getElementById('statusDonutChart').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: JSON.parse('{{ status_labels|safe }}'),
+            datasets: [{
+                data: JSON.parse('{{ status_data|safe }}'),
+                backgroundColor: ['#2F4550', '#586F7C', '#B8DBD9', '#27ae60', '#e74c3c', '#f39c12'],
+                borderWidth: 3
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Revenue Trend
+    var ctxRev = document.getElementById('revenueTrendChart').getContext('2d');
+    var gradient = ctxRev.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(47, 69, 80, 0.3)');
+    gradient.addColorStop(1, 'rgba(47, 69, 80, 0)');
+
+    new Chart(ctxRev, {
+        type: 'line',
+        data: {
+            labels: JSON.parse('{{ revenue_labels|safe }}'),
+            datasets: [{
+                label: 'Revenue',
+                data: JSON.parse('{{ revenue_data|safe }}'),
+                borderColor: '#2F4550',
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+
+    // Category Bar
+    var ctxCat = document.getElementById('categoryBarChart').getContext('2d');
+    new Chart(ctxCat, {
+        type: 'bar',
+        data: {
+            labels: JSON.parse('{{ cat_labels|safe }}'),
+            datasets: [{
+                data: JSON.parse('{{ cat_revenue|safe }}'),
+                backgroundColor: '#B8DBD9',
+                borderRadius: 5
+            }]
+        },
+        options: { 
+            indexAxis: 'y',
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { legend: { display: false } } 
+        }
+    });
+
+});
+</script>
+
+{% endblock content %}

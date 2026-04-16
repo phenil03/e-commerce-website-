@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style type="text/css">
+    body {
+        background-color: #f8fafc;
+        font-family: 'Inter', sans-serif;
+        color: #1e293b;
+    }
+    .bs-example {
+      margin: 0px;
+    }
+
+    .navbar {
+      padding: 0.75rem 2rem;
+      background: #2f4550 !important; /* Dark background */
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f8fafc !important; /* Light text for brand */
+      letter-spacing: -0.025em;
+    }
+
+    .navbar-nav .nav-link {
+      color: #cbd5e1 !important; /* Lighter text for links */
+      font-weight: 500;
+      padding: 0.5rem 1rem !important;
+      transition: all 0.3s ease;
+      font-size: 0.9375rem;
+      border-radius: 8px;
+      margin: 0 0.25rem;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .navbar-nav .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.05); /* Subtle glass effect on dark bg */
+      backdrop-filter: blur(5px);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 8px;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #ffffff !important; /* White text on hover */
+    }
+
+    .navbar-nav .nav-link:hover::before {
+      opacity: 1;
+    }
+
+    .navbar-nav .nav-link.active {
+      color: #ffffff !important; /* White text for active link */
+      background: rgba(37, 99, 235, 0.2) !important; /* Blue tint for active on dark bg */
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+    }
+    .navbar-nav .nav-link.active::before {
+      opacity: 1;
+      background: rgba(37, 99, 235, 0.2) !important;
+    }
+
+    .logout-btn {
+      background: #475569; /* Darker background for logout */
+      color: #f8fafc !important; /* Light text for logout */
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .logout-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.05); /* Subtle glass effect on dark bg */
+      backdrop-filter: blur(5px);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 8px;
+    }
+
+    .logout-btn:hover {
+      background: #64748b; /* Lighter background on hover */
+      color: #ffffff !important; /* White text on hover */
+    }
+
+    .logout-btn:hover::before {
+      opacity: 1;
+    }
+
+        /*---------------------------------------
+           Social section
+        -----------------------------------------*/
+        footer {
+          padding: 3rem 0;
+          background-color: #0f172a;
+          color: #94a3b8;
+          margin-top: 4rem;
+        }
+
+        #ftr {
+          padding: 20px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .fa {
+          font-size: 1.25rem;
+          width: 45px;
+          height: 45px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          margin: 0 8px;
+          border-radius: 12px;
+          transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .fa:hover {
+          transform: translateY(-3px);
+          opacity: 0.9;
+          text-decoration: none;
+          color: white;
+        }
+
+        .fa-facebook { background: #1877f2; color: white; }
+        .fa-whatsapp { background: #25d366; color: white; }
+        .fa-twitter { background: #1da1f2; color: white; }
+        .fa-instagram { background: #e4405f; color: white; }
+
+        p {
+          text-align: center;
+          margin-bottom: 0;
+        }
+  </style>
+</head>
+
+<body>
+
+
+
+  <div class="bs-example">
+    <nav class="navbar navbar-expand-md navbar-light">
+      <a href="/admin-dashboard" class="navbar-brand">Ecommerce</a>
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+        <div class="navbar-nav">
+          <a href="/admin-dashboard" class="nav-item nav-link {% if request.path == '/admin-dashboard' %}active{% endif %}">Dashboard</a>
+          <a href="/view-customer" class="nav-item nav-link {% if request.path == '/view-customer' %}active{% endif %}">Customer</a>
+          <a href="/admin-view-booking" class="nav-item nav-link {% if request.path == '/admin-view-booking' %}active{% endif %}">Booking</a>
+          <a href="/admin-cancelled-returned" class="nav-item nav-link {% if request.path == '/admin-cancelled-returned' %}active{% endif %}">Product Query</a>
+          <a href="/admin-products" class="nav-item nav-link {% if request.path == '/admin-products' %}active{% endif %}">Products</a>
+          <a href="/admin-analytics" class="nav-item nav-link {% if request.path == '/admin-analytics' %}active{% endif %}">Sales & Analytics</a>
+          <a href="/admin-complaints" class="nav-item nav-link {% if request.path == '/admin-complaints' %}active{% endif %}">Feedback & Complaints</a>
+        </div>
+        <div class="navbar-nav">
+          <a href="/logout" class="nav-item nav-link logout-btn px-3">LOGOUT</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- content start-->
+  <div class="container" style="margin-top: 80px;">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% block content %}
+
+  {% endblock content %}
+  <!-- content end-->
+<br><br><br><br><br><br><br><br>
+  <footer>
+    <p>
+      <a id="ftr" href="#" class="fa fa-facebook"></a>
+      <a id="ftr" href="#" class="fa fa-whatsapp"></a>
+      <a id="ftr" href="#" class="fa fa-instagram"></a>
+      <a id="ftr" href="#" class="fa fa-twitter"></a>
+    </p>
+
+    <br>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12">
+          <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
+            <p>Made in India <br>
+              Copyright &copy; 2020 Ecommerce </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+

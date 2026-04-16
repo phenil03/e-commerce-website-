@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Signup | E-Commerce</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #00171F 0%, #003459 40%, #007EA7 100%);
+            --accent-color: #00A8E8;
+            --text-dark: #00171F;
+            --text-muted: #495057;
+            --white: #ffffff;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 40px 20px;
+        }
+
+        /* Abstract blobs for background depth */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.4;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: move 20s infinite alternate;
+        }
+
+        .blob-1 { width: 400px; height: 400px; top: -100px; left: -100px; }
+        .blob-2 { width: 300px; height: 300px; bottom: -50px; right: -50px; background: #007EA7; animation-delay: -5s; }
+
+        @keyframes move {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
+        }
+
+        .signup-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 500px;
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            animation: slideUp 0.8s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signup-card h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .signup-card p.subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 15px;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            outline: none;
+            transition: var(--transition);
+            background: #F8F9FA;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(0, 168, 232, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 5;
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent-color);
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 168, 232, 0.4);
+            background: #0096D1;
+        }
+
+        .signup-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-text {
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .login-text a {
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .login-text a:hover {
+            color: #003459;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .alert-error, .alert-danger {
+            background: #FFE3E3;
+            color: #DC3545;
+        }
+
+        .alert-success {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .row .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 480px) {
+            .row {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="signup-card">
+        <h1>CUSTOMER SIGNUP</h1>
+        <p class="subtitle">Please enter your details to create account!</p>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="input-group">
+                    {% render_field userForm.first_name class="form-control" placeholder="First Name" %}
+                </div>
+                <div class="input-group">
+                    {% render_field userForm.last_name class="form-control" placeholder="Last Name" %}
+                </div>
+            </div>
+
+            <div class="input-group">
+                {% render_field userForm.username class="form-control" placeholder="Username" %}
+            </div>
+
+            <div class="input-group">
+                {% render_field userForm.password class="form-control" placeholder="Password" id="signup-password" %}
+                <i class="fa-solid fa-eye password-toggle" id="toggle-signup-password"></i>
+            </div>
+
+            <div class="input-group">
+                {% render_field customerForm.address class="form-control" placeholder="Address" %}
+            </div>
+
+            <div class="input-group">
+                {% render_field customerForm.mobile class="form-control" placeholder="Mobile" %}
+            </div>
+
+            <button type="submit" class="signup-btn">Create Account</button>
+
+            <p class="login-text">
+                Already have an account? <a href="/customerlogin">Login here</a>
+            </p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if userForm.errors or customerForm.errors %}
+                <div class="alert alert-danger" style="margin-top: 20px; text-align: left;">
+                    {% for field in userForm %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for field in customerForm %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <script>
+        const passwordField = document.getElementById('signup-password');
+        const toggleBtn = document.getElementById('toggle-signup-password');
+
+        toggleBtn.addEventListener('click', () => {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            toggleBtn.classList.toggle('fa-eye');
+            toggleBtn.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+</html>

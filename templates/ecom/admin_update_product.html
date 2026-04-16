@@ -1,0 +1,364 @@
+{% extends 'ecom/admin_base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<style>
+  .form-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .form-header {
+    background-color: #fff; /* White background for header */
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 1.5rem;
+    padding: 0; /* Remove padding as it's handled by container */
+    border-radius: 0; /* Remove border-radius */
+    text-align: left; /* Align text to left */
+    margin: 0 0 2rem 0; /* Adjust margin */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #e2e8f0; /* Add a bottom border */
+    padding-bottom: 1.5rem;
+  }
+  .form-header i {
+    font-size: 2rem;
+    color: #6366f1; /* Icon color */
+  }
+  .form-header div {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .form-header p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+  }
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  .form-label {
+    font-size: 0.875rem;
+    color: #334155;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    color: #334155;
+    transition: all 0.3s ease;
+    background-color: #fdfdfd;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2), 0 1px 5px rgba(37, 99, 235, 0.1);
+    background-color: #fff;
+  }
+  .form-control::placeholder {
+    color: #94a3b8;
+  }
+  textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+  }
+  /* Hide up/down arrows for number inputs (Price field) */
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  select.form-control {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+  }
+  .input-group {
+    display: flex;
+    align-items: center;
+  }
+  .input-group .form-control {
+    flex-grow: 1;
+    text-align: center;
+    border-left: none;
+    border-right: none;
+  }
+  .input-group-prepend .stock-btn,
+  .input-group-append .stock-btn {
+    background-color: #e2e8f0;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .input-group-prepend .stock-btn:hover,
+  .input-group-append .stock-btn:hover {
+    background-color: #cbd5e1;
+  }
+  .input-group-prepend .stock-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .input-group-append .stock-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .image-upload-area {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+    margin-top: 1rem;
+  }
+  .image-upload-area:hover,
+  .image-upload-area.drag-over {
+    border-color: #2563eb;
+    background-color: #eff6ff;
+  }
+  .image-upload-area i {
+    font-size: 3rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+  }
+  .image-upload-area p {
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+  }
+  .image-upload-area .file-type-info {
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+  .current-image-preview {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+  .current-image-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  .current-image-preview span {
+    color: #334155;
+    font-weight: 500;
+  }
+  .current-image-preview .clear-checkbox {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #475569;
+  }
+  .current-image-preview .clear-checkbox input {
+    margin: 0;
+  }
+  .d-flex {
+    display: flex;
+  }
+  .justify-content-end {
+    justify-content: flex-end;
+  }
+  .gap-3 {
+    gap: 1rem;
+  }
+  .mt-4 {
+    margin-top: 1.5rem;
+  }
+  .btn-light {
+    background-color: #e2e8f0;
+    color: #475569;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-light:hover {
+    background-color: #cbd5e1;
+    color: #1e293b;
+  }
+  .btn-primary {
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover {
+    background-color: #1d4ed8;
+  }
+</style>
+
+<div class="container py-4">
+  <div class="form-container">
+    <div class="form-header">
+      <i class="fa fa-edit"></i>
+      <div>
+        <h2>Update Product Details</h2>
+        <p>Modify the product information below</p>
+      </div>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.name.id_for_label }}" class="form-label">PRODUCT NAME</label>
+            {% render_field productForm.name class="form-control" placeholder="e.g. Wireless Earbuds Pro" %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.price.id_for_label }}" class="form-label">PRICE</label>
+            {% render_field productForm.price class="form-control" placeholder="0.00" %}
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="{{ productForm.description.id_for_label }}" class="form-label">DESCRIPTION</label>
+        {% render_field productForm.description class="form-control" placeholder="Write a short, compelling product description" rows="3" %}
+        <small class="form-text">Use one line per point or specification for clean alignment.</small>
+      </div>
+      <div class="form-group">
+        <label for="{{ productForm.about.id_for_label }}" class="form-label">ABOUT THIS ITEM</label>
+        {% render_field productForm.about class="form-control" placeholder="List key features, materials, and specs..." rows="5" %}
+        <small class="form-text">One feature per line — empty lines are removed automatically.</small>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.stock.id_for_label }}" class="form-label">STOCK</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <button type="button" class="btn stock-btn" data-action="decrement">-</button>
+              </div>
+              {% render_field productForm.stock class="form-control text-center" %}
+              <div class="input-group-append">
+                <button type="button" class="btn stock-btn" data-action="increment">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.category.id_for_label }}" class="form-label">CATEGORY</label>
+            {% render_field productForm.category class="form-control" %}
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">PRODUCT IMAGE</label>
+        {% if product.product_image %}
+        <div class="current-image-preview">
+          <img src="{{ product.product_image.url }}" alt="{{ product.name }}">
+          <span>{{ product.product_image.name|cut:"ecom/product_image/" }}</span>
+          <div class="clear-checkbox">
+            {{ productForm.product_image.clear_field.label_tag }}
+            {{ productForm.product_image.clear }}
+          </div>
+        </div>
+        {% endif %}
+        <div class="image-upload-area" id="image-upload-area">
+          <input type="file" name="{{ productForm.product_image.name }}" id="{{ productForm.product_image.id_for_label }}" accept="image/*" style="display: none;">
+          <i class="fa fa-cloud-upload"></i>
+          <p>Click to upload or drag & drop</p>
+          <p class="file-type-info">PNG, JPG, WEBP up to 10MB</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end gap-3 mt-4">
+        <button type="button" class="btn btn-light">Discard</button>
+        <button type="submit" class="btn btn-primary">Update product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Stock increment/decrement
+    document.querySelectorAll('.stock-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const input = this.closest('.input-group').querySelector('input[name="stock"]');
+        let value = parseInt(input.value);
+        if (isNaN(value)) value = 0;
+        if (this.dataset.action === 'decrement') {
+          input.value = Math.max(0, value - 1);
+        } else {
+          input.value = value + 1;
+        }
+      });
+    });
+
+    // Custom file input for image upload
+    const imageUploadArea = document.getElementById('image-upload-area');
+    const fileInput = document.getElementById('{{ productForm.product_image.id_for_label }}');
+
+    imageUploadArea.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        console.log('File selected:', this.files[0].name);
+      }
+    });
+
+    // Drag and drop functionality
+    imageUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      imageUploadArea.classList.add('drag-over');
+    });
+
+    imageUploadArea.addEventListener('dragleave', () => {
+      imageUploadArea.classList.remove('drag-over');
+    });
+
+    imageUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      imageUploadArea.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        const event = new Event('change');
+        fileInput.dispatchEvent(event);
+      }
+    });
+  });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,129 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .panel-modern {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  .panel-modern .panel-heading {
+    background: #fff;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-modern .panel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .table-modern {
+    margin-bottom: 0;
+  }
+  .table-modern thead th {
+    background: #f8fafc;
+    border-top: none;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+  }
+  .table-modern tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 0.9375rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .table-modern tbody tr:hover {
+    background-color: #f8fafc;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-top: 2rem;
+  }
+  .empty-state i {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 1rem;
+  }
+  .empty-state h4 {
+    margin-top: 0.5rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .btn-delete-modern { 
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2; 
+    color: #dc2626; 
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  .btn-delete-modern:hover { background: #fee2e2; }
+</style>
+
+<div class="container py-4">
+  <div class="panel-modern">
+    <div class="panel-heading">
+      <h3 class="panel-title">Customer Feedback</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Date</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for feedback in feedbacks %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><div style="font-weight: 600;">{{ feedback.customer.get_name }}</div></td>
+            <td><div style="font-weight: 600;">{{ feedback.subject }}</div></td>
+            <td><div class="text-muted small" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ feedback.message }}</div></td>
+            <td><div class="text-muted small">{{ feedback.date|date:"M j, Y" }}</div></td>
+            <td class="text-center">
+              <a href="{% url 'delete-feedback' feedback.id %}" class="btn-delete-modern" title="Delete Feedback"><i class="fa fa-trash"></i></a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-5">
+              <div class="empty-state" style="box-shadow: none; border: none; margin-top: 0; padding: 0;">
+                <i class="fa fa-comment-alt"></i>
+                <h4>No feedback submitted yet.</h4>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+

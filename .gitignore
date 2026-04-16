@@ -1,0 +1,17 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+venv/
+.venv/
+.venv_new/
+.env
+db.sqlite3
+
+# Git
+.git/
+
+# OS
+.DS_Store
+Thumbs.db

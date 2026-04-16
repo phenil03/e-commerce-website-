@@ -1,0 +1,258 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .panel-modern {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-top: 1.5rem;
+  }
+  .panel-modern .panel-heading {
+    background: #fff;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-modern .panel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .table-modern {
+    margin-bottom: 0;
+  }
+  .table-modern thead th {
+    background: #f8fafc;
+    border-top: none;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+  }
+  .table-modern tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 0.9375rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .table-modern tbody tr:hover {
+    background-color: #f8fafc;
+  }
+  .badge-modern {
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: inline-block;
+  }
+  .badge-pending { background-color: #fffaf0; color: #dd6b20; }
+  .badge-reviewed { background-color: #ebf8ff; color: #3182ce; }
+  .badge-resolved { background-color: #f0fff4; color: #38a169; }
+  .badge-default { background-color: #e2e8f0; color: #475569; }
+
+  .form-select-modern {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 120px;
+  }
+  .form-select-modern:focus {
+    border-color: #2563eb;
+  }
+  .btn-save-modern {
+    background: #2563eb;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-save-modern:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+  }
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-top: 1.5rem;
+  }
+  .empty-state i {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 1rem;
+  }
+  .empty-state h4 {
+    margin-top: 0.5rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .section-header h4 {
+    margin: 0;
+    color: #0f172a;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-header .badge-total {
+    background-color: #e2e8f0;
+    color: #475569;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+</style>
+
+<div class="container py-4">
+  <!-- Complaints Section -->
+  <div class="section-header">
+    <h4>
+      <i class="fa fa-exclamation-triangle text-red-500"></i>
+      Customer Complaints
+    </h4>
+    <span class="badge-total">
+      {{ complaints|length }} Total
+    </span>
+  </div>
+
+  {% if complaints %}
+  <div class="panel-modern">
+    <div class="table-responsive">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Type</th>
+            <th>Subject</th>
+            <th>Product</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><div style="font-weight: 600;">{{ complaint.customer.get_name }}</div></td>
+            <td>
+              <span class="badge-modern badge-default">{{ complaint.complaint_type }}</span>
+            </td>
+            <td>
+              <div style="font-weight: 600;">{{ complaint.subject }}</div>
+              <div class="text-muted small">{{ complaint.description|truncatechars:80 }}</div>
+            </td>
+            <td>
+              {% if complaint.product %}{{ complaint.product.name }}{% else %}<span class="text-muted">—</span>{% endif %}
+            </td>
+            <td><div class="text-muted small">{{ complaint.created_on|date:"M j, Y" }}</div></td>
+            <td>
+              {% if complaint.status == 'Pending' %}
+                <span class="badge-modern badge-pending">Pending</span>
+              {% elif complaint.status == 'Reviewed' %}
+                <span class="badge-modern badge-reviewed">Reviewed</span>
+              {% elif complaint.status == 'Resolved' %}
+                <span class="badge-modern badge-resolved">Resolved</span>
+              {% endif %}
+            </td>
+            <td>
+              <form method="POST" action="/update-complaint-status/{{ complaint.id }}" class="d-flex align-items-center gap-2">
+                {% csrf_token %}
+                <select name="status" class="form-select-modern">
+                  <option value="Pending" {% if complaint.status == 'Pending' %}selected{% endif %}>Pending</option>
+                  <option value="Reviewed" {% if complaint.status == 'Reviewed' %}selected{% endif %}>Reviewed</option>
+                  <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                </select>
+                <button type="submit" class="btn-save-modern">Save</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="fa fa-folder-open"></i>
+    <h4>No complaints submitted yet.</h4>
+  </div>
+  {% endif %}
+
+  <!-- Feedback Section -->
+  <div class="section-header">
+    <h4>
+      <i class="fa fa-comments text-green-500"></i>
+      Customer Feedback
+    </h4>
+    <span class="badge-total">
+      {{ feedbacks|length }} Total
+    </span>
+  </div>
+
+  {% if feedbacks %}
+  <div class="panel-modern">
+    <div class="table-responsive">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Date</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for feedback in feedbacks %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><div style="font-weight: 600;">{{ feedback.customer.get_name }}</div></td>
+            <td><div style="font-weight: 600;">{{ feedback.subject }}</div></td>
+            <td><div class="text-muted small" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ feedback.message }}</div></td>
+            <td><div class="text-muted small">{{ feedback.date|date:"M j, Y" }}</div></td>
+            <td>
+              <a href="{% url 'delete-feedback' feedback.id %}" class="btn-delete-modern" title="Delete Feedback"><i class="fa fa-trash"></i></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="fa fa-comment-alt"></i>
+    <h4>No feedback submitted yet.</h4>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

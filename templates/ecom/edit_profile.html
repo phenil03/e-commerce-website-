@@ -1,0 +1,246 @@
+{% extends 'ecom/customer_base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<head>
+  <style media="screen">
+    body {
+      background-color: #f5f5f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+
+    .edit-profile-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .edit-profile-header {
+      background: #32505b;
+      color: #fff;
+      padding: 15px 25px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .avatar-circle {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-right: 15px;
+      color: #fff;
+    }
+
+    .header-text {
+      flex: 1;
+    }
+
+    .header-text h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .header-text p {
+      margin: 2px 0 0 0;
+      font-size: 1.0rem;
+      opacity: 0.8;
+    }
+
+    .customer-badge {
+      background: rgba(255, 255, 255, 0.9);
+      color: #32505b;
+      padding: 6px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .edit-profile-content {
+      padding: 25px 40px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #555;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 12px 18px;
+      height: auto;
+      border: 1px solid #dcdcdc;
+      background-color: #fff;
+      transition: all 0.2s ease;
+      font-size: 1.4rem;
+      color: #333;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      border-color: #32505b;
+      box-shadow: 0 0 0 4px rgba(50, 80, 91, 0.08);
+      outline: none;
+    }
+
+    .form-control::placeholder {
+      color: #bbb;
+    }
+
+    .button-group {
+      margin-top: 5px;
+      padding-top: 10px;
+      border-top: 1px solid #f0f0f0;
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn-save {
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 12px 35px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-save:hover {
+      background-color: #f9f9f9;
+      border-color: #bbb;
+    }
+
+    .btn-cancel {
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 12px 35px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .btn-cancel:hover {
+      background-color: #f9f9f9;
+      border-color: #bbb;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+
+    .col-md-6 {
+      flex: 0 0 50%;
+      max-width: 50%;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+      .edit-profile-content {
+        padding: 30px 25px;
+      }
+    }
+  </style>
+
+
+</head>
+
+<!-- update page -->
+<form method="post">
+  {% csrf_token %}
+  <div class="container">
+    <div class="edit-profile-container">
+      <div class="edit-profile-header">
+        <div class="avatar-circle">
+          VM
+        </div>
+        <div class="header-text">
+          <h2>Edit profile</h2>
+          <p>Update your personal information</p>
+        </div>
+        <div class="customer-badge">
+          Customer
+        </div>
+      </div>
+      <div class="edit-profile-content">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              {% render_field userForm.first_name class="form-control" placeholder="First Name" %}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              {% render_field userForm.username class="form-control" placeholder="Username" %}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              {% render_field customerForm.mobile class="form-control" placeholder="Phone number" %}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              {% render_field userForm.last_name class="form-control" placeholder="Last Name" %}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              {% render_field userForm.password class="form-control" placeholder="New password" %}
+            </div>
+            <div class="form-group">
+              <label class="form-label">City</label>
+              {% render_field customerForm.address class="form-control" placeholder="City" %}
+            </div>
+          </div>
+        </div>
+        <div class="button-group">
+          <button type="submit" class="btn-save">Save changes</button>
+          <a href="{% url 'customer-home' %}" class="btn-cancel">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<!--
+-->
+
+{% endblock content %}
+
+

@@ -1,0 +1,289 @@
+{% extends 'ecom/admin_base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<style>
+  .form-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .form-header {
+    background-color: #fff; /* White background for header */
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 1.5rem;
+    padding: 0; /* Remove padding as it's handled by container */
+    border-radius: 0; /* Remove border-radius */
+    text-align: left; /* Align text to left */
+    margin: 0 0 2rem 0; /* Adjust margin */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #e2e8f0; /* Add a bottom border */
+    padding-bottom: 1.5rem;
+  }
+  .form-header i {
+    font-size: 2rem;
+    color: #6366f1; /* Icon color */
+  }
+  .form-header div {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .form-header p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+  }
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    color: #334155;
+    transition: all 0.3s ease;
+    background-color: #fdfdfd;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2), 0 1px 5px rgba(37, 99, 235, 0.1);
+    background-color: #fff;
+  }
+  .form-control::placeholder {
+    color: #94a3b8;
+  }
+  select.form-control {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem; /* Add padding to prevent text from overlapping the arrow */
+  }
+  textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+  }
+  /* Hide up/down arrows for number inputs (Price field) */
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .form-text {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    display: block;
+  }
+  .form-label {
+    font-size: 0.875rem;
+    color: #334155;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .btn-submit {
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 2rem;
+    cursor: pointer;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
+    display: block;
+    width: fit-content;
+    margin-top: 2rem;
+  }
+  .btn-submit:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+  }
+  .file-input-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #334155;
+    font-weight: 500;
+  }
+  .custom-file-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    padding: 0.5rem;
+  }
+  .custom-file-input input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+  }
+  .custom-file-input .file-label {
+    flex-grow: 1;
+    padding: 0.5rem 1rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .custom-file-input .file-button {
+    background-color: #e2e8f0;
+    color: #475569;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .custom-file-input .file-button:hover {
+    background-color: #cbd5e1;
+  }
+</style>
+
+<div class="container py-4">
+  <div class="form-container">
+    <div class="form-header">
+      <i class="fa fa-box"></i>
+      <div>
+        <h2>Add new product</h2>
+        <p>Fill in the details below to list your product</p>
+      </div>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.name.id_for_label }}" class="form-label">PRODUCT NAME</label>
+            {% render_field productForm.name class="form-control" placeholder="e.g. Wireless Earbuds Pro" %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.price.id_for_label }}" class="form-label">PRICE</label>
+            {% render_field productForm.price class="form-control" placeholder="0.00" %}
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="{{ productForm.description.id_for_label }}" class="form-label">DESCRIPTION</label>
+        {% render_field productForm.description class="form-control" placeholder="Write a short, compelling product description..." rows="3" %}
+        <small class="form-text">Use one line per point or specification for clean alignment.</small>
+      </div>
+      <div class="form-group">
+        <label for="{{ productForm.about.id_for_label }}" class="form-label">ABOUT THIS ITEM</label>
+        {% render_field productForm.about class="form-control" placeholder="List key features, materials, and specs..." rows="5" %}
+        <small class="form-text">One feature per line — empty lines are removed automatically.</small>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.stock.id_for_label }}" class="form-label">STOCK</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <button type="button" class="btn btn-outline-secondary stock-btn" data-action="decrement">-</button>
+              </div>
+              {% render_field productForm.stock class="form-control text-center" placeholder="10" %}
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary stock-btn" data-action="increment">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ productForm.category.id_for_label }}" class="form-label">CATEGORY</label>
+            {% render_field productForm.category class="form-control" %}
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">PRODUCT IMAGE</label>
+        <div class="image-upload-area" id="image-upload-area">
+          <input type="file" name="{{ productForm.product_image.name }}" id="{{ productForm.product_image.id_for_label }}" accept="image/*" style="display: none;">
+          <i class="fa fa-cloud-upload"></i>
+          <p>Click to upload or drag & drop</p>
+          <p class="file-type-info">PNG, JPG, WEBP up to 10MB</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end gap-3 mt-4">
+        <button type="button" class="btn btn-light btn-lg">Discard</button>
+        <button type="submit" class="btn btn-primary btn-lg">Publish product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Stock increment/decrement
+    document.querySelectorAll('.stock-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const input = this.closest('.input-group').querySelector('input[name="stock"]');
+        let value = parseInt(input.value);
+        if (isNaN(value)) value = 0;
+        if (this.dataset.action === 'decrement') {
+          input.value = Math.max(0, value - 1);
+        } else {
+          input.value = value + 1;
+        }
+      });
+    });
+
+    // Custom file input for image upload
+    const imageUploadArea = document.getElementById('image-upload-area');
+    const fileInput = imageUploadArea.querySelector('input[type="file"]');
+
+    imageUploadArea.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        // You can display the file name or a preview here if needed
+        console.log('File selected:', this.files[0].name);
+      }
+    });
+
+    // Drag and drop functionality
+    imageUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      imageUploadArea.classList.add('drag-over');
+    });
+
+    imageUploadArea.addEventListener('dragleave', () => {
+      imageUploadArea.classList.remove('drag-over');
+    });
+
+    imageUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      imageUploadArea.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        const event = new Event('change');
+        fileInput.dispatchEvent(event);
+      }
+    });
+  });
+</script>
+
+{% endblock content %}

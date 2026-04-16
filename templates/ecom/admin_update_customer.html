@@ -1,0 +1,199 @@
+{% extends 'ecom/admin_base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<style>
+  .form-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .form-header {
+    background-color: #fff; /* White background for header */
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 1.5rem;
+    padding: 0; /* Remove padding as it's handled by container */
+    border-radius: 0; /* Remove border-radius */
+    text-align: left; /* Align text to left */
+    margin: 0 0 2rem 0; /* Adjust margin */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #e2e8f0; /* Add a bottom border */
+    padding-bottom: 1.5rem;
+  }
+  .form-header i {
+    font-size: 2rem;
+    color: #6366f1; /* Icon color */
+  }
+  .form-header div {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .form-header p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+  }
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  .form-label {
+    font-size: 0.875rem;
+    color: #334155;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    color: #334155;
+    transition: all 0.3s ease;
+    background-color: #fdfdfd;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2), 0 1px 5px rgba(37, 99, 235, 0.1);
+    background-color: #fff;
+  }
+  .form-control::placeholder {
+    color: #94a3b8;
+  }
+  textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+  }
+  /* Hide up/down arrows for number inputs (Price field) */
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  select.form-control {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+  }
+  .d-flex {
+    display: flex;
+  }
+  .justify-content-end {
+    justify-content: flex-end;
+  }
+  .gap-3 {
+    gap: 1rem;
+  }
+  .mt-4 {
+    margin-top: 1.5rem;
+  }
+  .btn-light {
+    background-color: #e2e8f0;
+    color: #475569;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-light:hover {
+    background-color: #cbd5e1;
+    color: #1e293b;
+  }
+  .btn-primary {
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover {
+    background-color: #1d4ed8;
+  }
+</style>
+
+<div class="container py-4">
+  <div class="form-container">
+    <div class="form-header">
+      <i class="fa fa-user-edit"></i>
+      <div>
+        <h2>Update Customer Details</h2>
+        <p>Modify the customer information below</p>
+      </div>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ userForm.first_name.id_for_label }}" class="form-label">FIRST NAME</label>
+            {% render_field userForm.first_name class="form-control" placeholder="First Name" %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ userForm.last_name.id_for_label }}" class="form-label">LAST NAME</label>
+            {% render_field userForm.last_name class="form-control" placeholder="Last Name" %}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ userForm.username.id_for_label }}" class="form-label">USERNAME</label>
+            {% render_field userForm.username class="form-control" placeholder="Username" %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ userForm.password.id_for_label }}" class="form-label">PASSWORD</label>
+            {% render_field userForm.password class="form-control" placeholder="Password" %}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ customerForm.mobile.id_for_label }}" class="form-label">MOBILE</label>
+            {% render_field customerForm.mobile class="form-control" placeholder="Mobile" %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ customerForm.address.id_for_label }}" class="form-label">ADDRESS</label>
+            {% render_field customerForm.address class="form-control" placeholder="Address" %}
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end gap-3 mt-4">
+        <button type="button" class="btn btn-light">Discard</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}

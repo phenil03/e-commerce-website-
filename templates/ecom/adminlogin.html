@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | E-Commerce</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #00171F 0%, #003459 40%, #007EA7 100%);
+            --accent-color: #00A8E8;
+            --text-dark: #00171F;
+            --text-muted: #495057;
+            --white: #ffffff;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Abstract blobs for background depth */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.4;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: move 20s infinite alternate;
+        }
+
+        .blob-1 { width: 400px; height: 400px; top: -100px; left: -100px; }
+        .blob-2 { width: 300px; height: 300px; bottom: -50px; right: -50px; background: #007EA7; animation-delay: -5s; }
+
+        @keyframes move {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
+        }
+
+        .login-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 440px;
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            animation: slideUp 0.8s ease-out;
+            position: relative;
+            margin: 20px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .login-card p.subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 15px;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            outline: none;
+            transition: var(--transition);
+            background: #F8F9FA;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(0, 168, 232, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 5;
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent-color);
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 168, 232, 0.4);
+            background: #0096D1;
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .signup-text {
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .signup-text a {
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .signup-text a:hover {
+            color: #003459;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .alert-error, .alert-danger {
+            background: #FFE3E3;
+            color: #DC3545;
+        }
+
+        .alert-success {
+            background: #D4EDDA;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="login-card">
+        <h1>ADMIN LOGIN</h1>
+        <p class="subtitle">Please enter your login and password!</p>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="input-group">
+                {% render_field form.username class="form-control" placeholder="Username" %}
+            </div>
+
+            <div class="input-group">
+                {% render_field form.password class="form-control" placeholder="Password" id="password-field" %}
+                <i class="fa-solid fa-eye password-toggle" id="toggle-password"></i>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+
+            <p class="signup-text">
+                Not an admin? <a href="/customerlogin">Customer Login</a>
+            </p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.non_field_errors or form.errors %}
+                <div class="alert alert-danger" style="margin-top: 20px; text-align: left;">
+                    {% if form.non_field_errors %}
+                        {{ form.non_field_errors }}
+                    {% endif %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <script>
+        const passwordField = document.getElementById('password-field');
+        const toggleBtn = document.getElementById('toggle-password');
+
+        toggleBtn.addEventListener('click', () => {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            toggleBtn.classList.toggle('fa-eye');
+            toggleBtn.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+</html>
