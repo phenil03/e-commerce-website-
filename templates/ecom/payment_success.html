@@ -2,50 +2,155 @@
 {% load static %}
 
 {% block content %}
-<style media="screen">
-  .success-page{
-  max-width:300px;
-  display:block;
-  margin: 0 auto;
-  text-align: center;
-      position: relative;
-    top: 50%;
-    transform: perspective(1px) translateY(50%)
-}
-.success-page img{
-  max-width:62px;
-  display: block;
-  margin: 0 auto;
-}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-.btn-view-orders{
-  display: block;
-  border:1px solid #47c7c5;
-  width:100px;
-  margin: 0 auto;
-  margin-top: 45px;
-  padding: 10px;
-  color:#fff;
-  background-color:#47c7c5;
-  text-decoration: none;
-  margin-bottom: 20px;
-}
-h2{
-  color:#0014ff;
-    margin-top: 25px;
+<style>
+    :root {
+        --primary: #2F4550;
+        --secondary: #586F7C;
+        --accent: #B8DBD9;
+        --success: #10B981;
+        --bg: #F4F4F9;
+    }
 
-}
-a{
-  text-decoration: none;
-}
+    .success-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+        padding: 40px 20px;
+        font-family: 'Outfit', sans-serif;
+        text-align: center;
+        background: var(--bg);
+    }
+
+    .success-card {
+        background: #FFFFFF;
+        padding: 60px 40px;
+        border-radius: 32px;
+        box-shadow: 0 20px 40px rgba(47, 69, 80, 0.1);
+        max-width: 500px;
+        width: 100%;
+        transform: translateY(0);
+        animation: cardAppear 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes cardAppear {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animated Checkmark */
+    .checkmark-wrapper {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 2;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        margin: 0 auto 30px;
+        box-shadow: inset 0px 0px 0px var(--success);
+        animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+    }
+
+    .checkmark-circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 2;
+        stroke-miterlimit: 10;
+        stroke: var(--success);
+        fill: none;
+        animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .checkmark-check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+
+    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+    @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+    @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 50px var(--success); } }
+
+    .success-card h2 {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 32px;
+        margin-bottom: 15px;
+    }
+
+    .success-card p {
+        color: var(--secondary);
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 40px;
+    }
+
+    .actions-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #FFFFFF !important;
+        padding: 16px 30px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(47, 69, 80, 0.2);
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 25px rgba(47, 69, 80, 0.3);
+    }
+
+    .btn-secondary-custom {
+        background: transparent;
+        color: var(--primary) !important;
+        padding: 14px 30px;
+        border-radius: 14px;
+        font-weight: 500;
+        font-size: 15px;
+        text-decoration: none !important;
+        border: 1.5px solid var(--accent);
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary-custom:hover {
+        background: var(--bg);
+        border-color: var(--secondary);
+    }
 </style>
-<div class="success-page" style="top:auto;">
-   <img  src="http://share.ashiknesin.com/green-checkmark.png" class="center" alt="" />
-  <h2>Payment Successful !</h2>
-  <p>We are delighted to inform you that we received your payments</p>
-  <a style="text-decoration:none;" href="/my-order" class="btn-view-orders">View Orders</a>
-  <a style="text-decoration:none;" href="/customer-home">Continue Shopping</a>
+
+<div class="success-container">
+    <div class="success-card">
+        <!-- Modern SVG Checkmark -->
+        <svg class="checkmark-wrapper" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+
+        <h2>Payment Successful!</h2>
+        <p>Your order has been placed successfully. We're getting it ready for shipment and will notify you soon.</p>
+
+        <div class="actions-grid">
+            <a href="/my-order" class="btn-primary-custom">
+                <i class="fa fa-shopping-bag" style="margin-right: 8px;"></i> View My Orders
+            </a>
+            <a href="/customer-home" class="btn-secondary-custom">
+                Continue Shopping
+            </a>
+        </div>
+    </div>
 </div>
-<br><br><br><br>
-<br><br><br><br>
 {% endblock content %}

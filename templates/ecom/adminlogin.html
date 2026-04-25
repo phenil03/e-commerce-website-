@@ -1,13 +1,6 @@
-<!DOCTYPE html>
+{% extends 'ecom/homebase.html' %}
 {% load widget_tweaks %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | E-Commerce</title>
-    <!-- Modern Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% block content %}
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #00171F 0%, #003459 40%, #007EA7 100%);
@@ -19,20 +12,19 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
-        }
-
         body {
             background: var(--primary-gradient);
             min-height: 100vh;
+            margin: 0;
+        }
+
+        .login-page-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            padding: 40px 20px;
+            position: relative;
+            min-height: calc(100vh - 70px);
         }
 
         /* Abstract blobs for background depth */
@@ -73,7 +65,6 @@
             text-align: center;
             animation: slideUp 0.8s ease-out;
             position: relative;
-            margin: 20px;
         }
 
         @keyframes slideUp {
@@ -195,66 +186,70 @@
             color: #155724;
         }
     </style>
-</head>
-<body>
+
     <div class="bg-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
     </div>
 
-    <div class="login-card">
-        <h1>ADMIN LOGIN</h1>
-        <p class="subtitle">Please enter your login and password!</p>
+    <div class="login-page-wrapper">
+        <div class="login-card">
+            <h1>ADMIN LOGIN</h1>
+            <p class="subtitle">Please enter your login and password!</p>
 
-        <form method="post">
-            {% csrf_token %}
-            
-            <div class="input-group">
-                {% render_field form.username class="form-control" placeholder="Username" %}
-            </div>
-
-            <div class="input-group">
-                {% render_field form.password class="form-control" placeholder="Password" id="password-field" %}
-                <i class="fa-solid fa-eye password-toggle" id="toggle-password"></i>
-            </div>
-
-            <button type="submit" class="login-btn">Login</button>
-
-            <p class="signup-text">
-                Not an admin? <a href="/customerlogin">Customer Login</a>
-            </p>
-
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-
-            {% if form.non_field_errors or form.errors %}
-                <div class="alert alert-danger" style="margin-top: 20px; text-align: left;">
-                    {% if form.non_field_errors %}
-                        {{ form.non_field_errors }}
-                    {% endif %}
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                            <li>{{ field.label }}: {{ error }}</li>
-                        {% endfor %}
-                    {% endfor %}
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    {% render_field form.username class="form-control" placeholder="Username" %}
                 </div>
-            {% endif %}
-        </form>
+
+                <div class="input-group">
+                    {% render_field form.password class="form-control" placeholder="Password" id="password-field" %}
+                    <i class="fa-solid fa-eye password-toggle" id="toggle-password"></i>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+
+                <p class="signup-text">
+                    Not an admin? <a href="/customerlogin">Customer Login</a>
+                </p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if form.non_field_errors or form.errors %}
+                    <div class="alert alert-danger" style="margin-top: 20px; text-align: left;">
+                        {% if form.non_field_errors %}
+                            {{ form.non_field_errors }}
+                        {% endif %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
     </div>
+{% endblock %}
 
+{% block scripts %}
     <script>
-        const passwordField = document.getElementById('password-field');
-        const toggleBtn = document.getElementById('toggle-password');
+        const adminPasswordField = document.getElementById('password-field');
+        const adminToggleBtn = document.getElementById('toggle-password');
 
-        toggleBtn.addEventListener('click', () => {
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            toggleBtn.classList.toggle('fa-eye');
-            toggleBtn.classList.toggle('fa-eye-slash');
-        });
+        if (adminToggleBtn && adminPasswordField) {
+            adminToggleBtn.addEventListener('click', () => {
+                const type = adminPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                adminPasswordField.setAttribute('type', type);
+                adminToggleBtn.classList.toggle('fa-eye');
+                adminToggleBtn.classList.toggle('fa-eye-slash');
+            });
+        }
     </script>
-</body>
-</html>
+{% endblock %}

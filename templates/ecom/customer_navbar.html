@@ -1,127 +1,139 @@
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-    --navbar-bg: #2f4550;
-    --navbar-text: #f8fafc;
-    --navbar-input-bg: #f1f5f9;
-    --accent-color: #3b82f6;
-    --accent-hover: #2563eb;
-    --glass-bg: rgba(255, 255, 255, 0.1);
+    --nav-bg: #2F4550;
+    --nav-text: #FFFFFF;
+    --nav-link-color: #D1D5DB;
+    --search-bg: #F3F4F6;
+    --accent-blue: #3B82F6;
+    --accent-hover: #2563EB;
 }
 
 #navbar {
-    background-color: var(--navbar-bg);
-    color: var(--navbar-text);
-    padding: 10px 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: var(--nav-bg);
+    color: var(--nav-text);
+    padding: 12px 0;
     font-family: 'Inter', sans-serif;
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .nav-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
+    gap: 40px;
 }
 
 .brand-section a {
     text-decoration: none;
-    color: var(--navbar-text);
-    font-size: 26px;
+    color: var(--nav-text);
+    font-size: 24px;
     font-weight: 800;
-    letter-spacing: -1px;
-    white-space: nowrap;
+    letter-spacing: -0.5px;
 }
 
 .search-section {
     flex-grow: 1;
-    max-width: 600px;
+    max-width: 700px;
     position: relative;
 }
 
 .nav-search-form {
     display: flex;
-    width: 100%;
-    background: var(--navbar-input-bg);
+    align-items: center;
+    background: var(--search-bg);
     border-radius: 10px;
-    overflow: hidden;
-    transition: box-shadow 0.3s;
+    padding: 2px 4px;
+    transition: box-shadow 0.2s;
 }
 
 .nav-search-form:focus-within {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
 }
 
 .navbar-input {
     flex-grow: 1;
     border: none;
-    padding: 10px 18px;
-    font-size: 15px;
     background: transparent;
+    padding: 10px 16px;
+    font-size: 15px;
+    color: #374151;
     outline: none;
-    color: #1e293b;
-    width: 100%;
+}
+
+.navbar-input::placeholder {
+    color: #9CA3AF;
 }
 
 .navbar-button {
     background: transparent;
     border: none;
-    padding: 0 15px;
+    padding: 0 12px;
     cursor: pointer;
-    color: #64748b;
-    transition: color 0.2s;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
 }
 
 .navbar-button:hover {
-    color: var(--accent-color);
+    color: var(--accent-blue);
 }
 
 .nav-links-section {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 28px;
 }
 
 .nav-link-item {
-    color: #cbd5e1;
+    color: var(--nav-link-color);
     text-decoration: none !important;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: all 0.2s;
-    white-space: nowrap;
+    transition: color 0.2s;
 }
 
 .nav-link-item:hover {
-    color: white;
-    background: var(--glass-bg);
+    color: #FFFFFF;
 }
 
 .dropdown-container {
     position: relative;
+    cursor: pointer;
 }
 
 .dropdown-menu-custom {
     position: absolute;
-    top: calc(100% + 10px);
+    top: 100%;
     right: 0;
-    background: white;
+    background: #FFFFFF;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    min-width: 180px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    min-width: 200px;
     display: none;
-    overflow: hidden;
-    animation: slideDown 0.2s ease;
+    padding: 8px 0;
+    margin-top: 12px;
+    animation: fadeIn 0.2s ease;
 }
 
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
+.dropdown-menu-custom::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -131,49 +143,52 @@
 
 .dropdown-item-custom {
     display: block;
-    padding: 12px 18px;
-    color: #1e293b;
+    padding: 10px 20px;
+    color: #374151;
     text-decoration: none !important;
     font-size: 14px;
     transition: background 0.2s;
 }
 
 .dropdown-item-custom:hover {
-    background: #f1f5f9;
-    color: var(--accent-color);
+    background: #F3F4F6;
+    color: var(--accent-blue);
 }
 
-.cart-button-custom {
-    background: var(--accent-color);
-    color: white !important;
-    padding: 10px 20px;
+.cart-btn {
+    background: var(--accent-blue);
+    color: #FFFFFF !important;
+    padding: 10px 24px;
     border-radius: 10px;
     text-decoration: none !important;
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: transform 0.2s, background 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+    transition: background 0.2s, transform 0.2s;
 }
 
-.cart-button-custom:hover {
+.cart-btn:hover {
     background: var(--accent-hover);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
-.cart-count {
-    background: rgba(255,255,255,0.2);
+.cart-badge {
+    background: rgba(255, 255, 255, 0.2);
     padding: 2px 8px;
     border-radius: 6px;
     font-size: 12px;
 }
 
-@media (max-width: 992px) {
-    .nav-container { flex-direction: column; align-items: stretch; gap: 10px; }
-    .search-section { max-width: none; order: 3; }
-    .brand-section { text-align: center; }
-    .nav-links-section { justify-content: center; }
+@media (max-width: 1024px) {
+    .nav-container { gap: 20px; padding: 0 15px; }
+    .nav-links-section { gap: 15px; }
+    .nav-link-item { font-size: 14px; }
+}
+
+@media (max-width: 768px) {
+    .nav-container { flex-wrap: wrap; justify-content: center; padding: 15px; }
+    .search-section { order: 3; max-width: 100%; width: 100%; }
 }
 </style>
 
@@ -190,6 +205,7 @@
                     <i class="fas fa-search"></i>
                 </button>
             </form>
+            <div id="search-results-container" class="search-results" style="position: absolute; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 700px; display: none; z-index: 1001; margin-top: 5px;"></div>
         </div>
 
         <div class="nav-links-section">
@@ -197,22 +213,23 @@
             <a class="nav-link-item" href="/my-profile">Profile</a>
             
             <div class="dropdown-container">
-                <a class="nav-link-item" href="javascript:void(0)">More <i class="fas fa-chevron-down ml-1" style="font-size: 10px;"></i></a>
+                <span class="nav-link-item">More <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i></span>
                 <div class="dropdown-menu-custom">
-                    <a class="dropdown-item-custom" href="/wishlist">My Wishlist</a>
                     <a class="dropdown-item-custom" href="/submit-complaint">Submit Complaint</a>
                     <a class="dropdown-item-custom" href="/my-complaints">My Complaints</a>
                     <a class="dropdown-item-custom" href="/send-feedback">Send Feedback</a>
                 </div>
             </div>
 
-            <a class="nav-link-item" href="/logout" style="color: #ef4444 !important;">Logout</a>
+            <a class="nav-link-item" href="/logout">Logout</a>
 
-            <a class="cart-button-custom" href="/cart">
-                <i class="fas fa-shopping-cart"></i>
+            <a class="cart-btn" href="/cart">
+                <i class="fa-solid fa-cart-shopping"></i>
                 <span>Cart</span>
-                <span class="cart-count">{{ product_count_in_cart }}</span>
+                {% if product_count_in_cart is not None %}
+                    <span class="cart-badge">{{ product_count_in_cart }}</span>
+                {% endif %}
             </a>
         </div>
     </div>
-</div>
+</div>

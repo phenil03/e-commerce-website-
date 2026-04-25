@@ -1335,6 +1335,7 @@ def payment_view(request):
         'discount': discount,
         'discount_amount': original_total - total,
         'coupon_code': request.session.get('coupon_code', ''),
+        'product_count_in_cart': _cart_item_count(request),
     })
     response.set_cookie('discounted_total', str(total))
     return response
