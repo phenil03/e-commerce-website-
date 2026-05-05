@@ -19,7 +19,7 @@ Welcome to **ECOHENIL**, a robust and feature-rich e-commerce application built 
 *   **Return System**: Hassle-free 7-day return policy for delivered items.
 *   **Reviews & Ratings**: Share feedback and rate products from 1 to 5 stars.
 *   **Invoices**: Automatically generated downloadable invoices for every successful order.
-*   **Coupons**: Apply discount codes to save on purchases.
+  
 *   **Complaint Portal**: Submit and track complaints regarding products or delivery.
 
 ### 🛡️ Admin Management
