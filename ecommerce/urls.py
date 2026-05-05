@@ -42,6 +42,7 @@ urlpatterns = [
     path('admin-complete-refund/<int:pk>', views.admin_complete_refund_view, name='admin-complete-refund'),
     path('delete-order/<int:pk>', views.delete_order_view,name='delete-order'),
     path('update-order/<int:pk>', views.update_order_view,name='update-order'),
+    path('update-order-item-status/<int:pk>', views.update_order_item_status_view, name='update-order-item-status'),
 
 
     path('customersignup', views.customer_signup_view),
@@ -50,6 +51,7 @@ urlpatterns = [
     path('customer-home', views.customer_home_view,name='customer-home'),
     path('my-order', views.my_order_view,name='my-order'),
     path('cancel-order/<int:pk>', views.cancel_order_view, name='cancel-order'),
+    path('cancel-order-selection/<int:pk>', views.cancel_order_selection_view, name='cancel-order-selection'),
     path('return-order/<int:pk>', views.return_order_view, name='return-order'),
     path('my-profile', views.my_profile_view,name='my-profile'),
     path('edit-profile', views.edit_profile_view,name='edit-profile'),

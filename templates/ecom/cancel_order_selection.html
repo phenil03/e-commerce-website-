@@ -1,0 +1,308 @@
+{% extends 'ecom/customer_base.html' %}
+{% load static %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #00171F 0%, #003459 40%, #007EA7 100%);
+        --accent-color: #007EA7;
+        --danger-color: #DC3545;
+        --white: #ffffff;
+        --light-bg: #F8F9FA;
+        --border-color: #E9ECEF;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .selection-container {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 0 20px;
+    }
+
+    .selection-card {
+        background: var(--white);
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+
+    .selection-header {
+        padding: 40px;
+        background: var(--primary-gradient);
+        color: var(--white);
+        text-align: center;
+    }
+
+    .selection-header h2 {
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .selection-header p {
+        opacity: 0.9;
+        font-size: 16px;
+    }
+
+    .selection-body {
+        padding: 40px;
+    }
+
+    .item-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .item-row:hover {
+        border-color: var(--accent-color);
+        background: rgba(0, 126, 167, 0.02);
+    }
+
+    .item-row.selected {
+        border-color: var(--danger-color);
+        background: rgba(220, 53, 69, 0.02);
+    }
+
+    .item-checkbox {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+    }
+
+    .product-img {
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
+        background: #fff;
+        border-radius: 12px;
+        padding: 5px;
+        border: 1px solid var(--border-color);
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-name {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+
+    .item-meta {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .action-footer {
+        padding: 30px 40px;
+        background: var(--light-bg);
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-confirm-trigger {
+        padding: 14px 35px;
+        background: var(--danger-color);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .btn-confirm-trigger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-back {
+        color: #6c757d;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    /* Custom Modal UI */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s;
+    }
+
+    .modal-ui {
+        background: #fff;
+        width: 90%;
+        max-width: 450px;
+        border-radius: 24px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        transform: scale(0.9);
+        animation: scaleUp 0.3s forwards;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleUp { from { transform: scale(0.9); } to { transform: scale(1); } }
+
+    .modal-icon {
+        font-size: 50px;
+        color: var(--danger-color);
+        margin-bottom: 20px;
+    }
+
+    .modal-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 15px;
+    }
+
+    .modal-desc {
+        color: #64748b;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn-modal {
+        flex: 1;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-yes { background: var(--danger-color); color: #fff; }
+    .btn-yes:hover { background: #c82333; }
+    .btn-no { background: #f1f5f9; color: #475569; }
+    .btn-no:hover { background: #e2e8f0; }
+
+    .show-modal { display: flex !important; }
+</style>
+
+<div class="selection-container">
+    <div class="selection-card">
+        <div class="selection-header">
+            <h2>Cancel Items</h2>
+            <p>Select the products you wish to cancel from Order #{{ order.id }}</p>
+        </div>
+        
+        <form id="cancelForm" method="POST">
+            {% csrf_token %}
+            <div class="selection-body">
+                {% if items %}
+                    {% for item in items %}
+                    <label class="item-row" id="row-{{ item.id }}">
+                        <input type="checkbox" name="selected_items" value="{{ item.id }}" class="item-checkbox" onchange="toggleRow('{{ item.id }}')">
+                        {% if item.product.product_image %}
+                            <img src="{{ item.product.product_image.url }}" class="product-img">
+                        {% else %}
+                            <img src="{% static 'images/success.png' %}" class="product-img">
+                        {% endif %}
+                        <div class="item-info">
+                            <div class="item-name">{{ item.product.name }}</div>
+                            <div class="item-meta">Price: ₹{{ item.price }} | Qty: {{ item.quantity }}</div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa fa-info-circle mb-3" style="font-size: 3rem; color: #dee2e6;"></i>
+                        <p class="text-muted">No items available for cancellation in this order.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="action-footer">
+                <a href="{% url 'my-order' %}" class="btn-back">
+                    <i class="fa fa-arrow-left mr-1"></i> Back to Orders
+                </a>
+                {% if items %}
+                <button type="button" class="btn-confirm-trigger" onclick="showCustomModal()">
+                    Confirm Cancellation
+                </button>
+                {% endif %}
+            </div>
+
+            <!-- Custom Modal UI Overlay -->
+            <div id="customModal" class="modal-overlay" onclick="closeCustomModal(event)">
+                <div class="modal-ui" onclick="event.stopPropagation()">
+                    <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="modal-title">Confirm Cancellation</div>
+                    <div class="modal-desc">Are you sure you want to cancel the selected items? This action cannot be undone and the items will be restored to inventory.</div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-modal btn-no" onclick="hideCustomModal()">Go Back</button>
+                        <button type="submit" class="btn-modal btn-yes">Yes, Cancel Them</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleRow(id) {
+        const row = document.getElementById('row-' + id);
+        const checkbox = row.querySelector('.item-checkbox');
+        if (checkbox.checked) {
+            row.classList.add('selected');
+        } else {
+            row.classList.remove('selected');
+        }
+    }
+
+    function showCustomModal() {
+        const selected = document.querySelectorAll('input[name="selected_items"]:checked');
+        if (selected.length === 0) {
+            alert('Please select at least one item to cancel.');
+            return;
+        }
+        document.getElementById('customModal').classList.add('show-modal');
+    }
+
+    function hideCustomModal() {
+        document.getElementById('customModal').classList.remove('show-modal');
+    }
+
+    function closeCustomModal(event) {
+        if (event.target === document.getElementById('customModal')) {
+            hideCustomModal();
+        }
+    }
+</script>
+
+<br><br><br>
+{% endblock content %}

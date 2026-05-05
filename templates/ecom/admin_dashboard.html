@@ -84,11 +84,20 @@
   .table-modern tbody tr:hover {
     background-color: #f8fafc;
   }
-  .product-img {
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  .product-img-stack {
+    display: flex;
+    align-items: center;
   }
+  .product-img-stack img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-left: -10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .product-img-stack img:first-child { margin-left: 0; }
+
   .badge-modern {
     padding: 0.5em 0.75em;
     border-radius: 6px;
@@ -132,30 +141,43 @@
           <tr>
             <th>Customer</th>
             <th>Contact</th>
-            <th>Address</th>
-            <th>Product</th>
+            <th>Items</th>
             <th>Image</th>
+            <th>Total</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {% for product,customer,order in data %}
+          {% for order in orders %}
           <tr>
-            {% for c in customer %}
-            <td><div style="font-weight: 600;">{{c.get_name}}</div></td>
-            <td>{{c.mobile}}</td>
-            <td>{{order.address}}</td>
-            {% endfor %}
-            {% for p in product %}
-            <td>{{p.name}}</td>
             <td>
-              {% if p.product_image %}
-                <img src="{{ p.product_image.url }}" class="product-img" height="45" width="45" />
-              {% else %}
-                <img src="{% static 'images/success.png' %}" class="product-img" height="45" width="45" />
-              {% endif %}
+                <div style="font-weight: 600;">{{ order.customer.get_name }}</div>
+                <div class="small text-muted">{{ order.order_date|date:"M j, Y" }}</div>
             </td>
-
+            <td>{{ order.customer.mobile }}</td>
+            <td>
+                <div class="small">
+                {% for item in order.items.all %}
+                    {% if item.status != 'Cancelled' %}
+                        {{ item.product.name }}{% if not forloop.last %}, {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </div>
+            </td>
+            <td>
+              <div class="product-img-stack">
+                {% for item in order.items.all %}
+                  {% if item.status != 'Cancelled' %}
+                    {% if item.product.product_image %}
+                      <img src="{{ item.product.product_image.url }}" title="{{ item.product.name }}" />
+                    {% else %}
+                      <img src="{% static 'images/success.png' %}" />
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </td>
+            <td class="font-weight-700 text-primary">₹{{ order.total_amount }}</td>
             <td>
               {% if order.status == 'Pending'%}
                 <span class="badge-modern badge-pending">{{order.status}}</span>
@@ -169,7 +191,6 @@
                 <span class="badge-modern badge-info">{{order.status}}</span>
               {% endif %}
             </td>
-            {% endfor %}
           </tr>
           {% endfor %}
         </tbody>

@@ -161,30 +161,14 @@ def admin_dashboard_view(request):
     pending_orders = models.Order.objects.filter(status='Pending').count()
 
     # for recent order tables
-    orders=models.Order.objects.all().order_by('-id')
-    ordered_products=[]
-    ordered_bys=[]
-    for order in orders:
-        # Since an order can have multiple items, we get the first one for the dashboard view
-        # or you might want to show all. For the current table structure, we'll take the first product.
-        first_item = order.items.all().first()
-        if first_item:
-            ordered_product = models.Product.objects.filter(id=first_item.product.id)
-        else:
-            ordered_product = models.Product.objects.none()
-            
-        if order.customer:
-            ordered_by=models.Customer.objects.all().filter(id = order.customer.id)
-        else:
-            ordered_by=models.Customer.objects.none() 
-        ordered_products.append(ordered_product)
-        ordered_bys.append(ordered_by)
+    recent_orders = models.Order.objects.all().order_by('-id')[:10]
+
 
     context={
         'customercount':customercount,
         'productcount':productcount,
         'ordercount':ordercount,
-        'data':zip(ordered_products,ordered_bys,orders),
+        'orders': recent_orders,
         'total_orders_today': total_orders_today,
         'total_revenue_today': total_revenue_today,
         'new_customers_today': new_customers_today,
@@ -356,44 +340,47 @@ def admin_view_booking_view(request):
     status_filter = request.GET.get('status_filter')
     if status_filter:
         orders = orders.filter(status=status_filter)
+        
+    status_choices = models.Order.STATUS
+    return render(request,'ecom/admin_view_booking.html',{'orders':orders, 'status_choices': status_choices})
 
-    ordered_products=[]
-    ordered_bys=[]
-    for order in orders:
-        first_item = order.items.all().first()
-        if first_item:
-            ordered_product = models.Product.objects.filter(id=first_item.product.id)
-        else:
-            ordered_product = models.Product.objects.none()
+@login_required(login_url='adminlogin')
+def update_order_item_status_view(request, pk):
+    item = models.OrderItem.objects.get(id=pk)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        old_status = item.status
+        if new_status in dict(models.Order.STATUS):
+            item.status = new_status
+            item.save()
             
-        if order.customer:
-            ordered_by=models.Customer.objects.all().filter(id = order.customer.id)
-        else:
-            ordered_by=models.Customer.objects.none() 
-        ordered_products.append(ordered_product)
-        ordered_bys.append(ordered_by)
-    return render(request,'ecom/admin_view_booking.html',{'data':zip(ordered_products,ordered_bys,orders)})
+            order = item.order
+            # Update total amount if status changed to/from Cancelled
+            if new_status == 'Cancelled' and old_status != 'Cancelled':
+                order.total_amount = max(0, order.total_amount - (item.price * item.quantity))
+            elif new_status != 'Cancelled' and old_status == 'Cancelled':
+                order.total_amount += (item.price * item.quantity)
+            
+            # Sync parent order status if needed (optional logic)
+            all_items_status = [i.status for i in order.items.all()]
+            
+            if all(s == 'Delivered' for s in all_items_status):
+                order.status = 'Delivered'
+            elif any(s == 'Out for Delivery' for s in all_items_status):
+                order.status = 'Out for Delivery'
+            elif any(s == 'Order Confirmed' for s in all_items_status):
+                order.status = 'Order Confirmed'
+            
+            order.save()
+            
+            messages.success(request, f"Status for {item.product.name} updated to {new_status}")
+    return redirect('admin-view-booking')
 
 @login_required(login_url='adminlogin')
 def admin_cancelled_returned_view(request):
     # Filter only cancelled or returned orders
     orders=models.Order.objects.all().filter(status__in=['Cancelled', 'Cancellation Requested', 'Return Requested', 'Return Approved', 'Return Rejected', 'Refund Completed']).order_by('-id')
-    ordered_products=[]
-    ordered_bys=[]
-    for order in orders:
-        first_item = order.items.all().first()
-        if first_item:
-            ordered_product = models.Product.objects.filter(id=first_item.product.id)
-        else:
-            ordered_product = models.Product.objects.none()
-            
-        if order.customer:
-            ordered_by=models.Customer.objects.all().filter(id = order.customer.id)
-        else:
-            ordered_by=models.Customer.objects.none() 
-        ordered_products.append(ordered_product)
-        ordered_bys.append(ordered_by)
-    return render(request,'ecom/admin_cancelled_returned_orders.html',{'data':zip(ordered_products,ordered_bys,orders)})
+    return render(request,'ecom/admin_cancelled_returned_orders.html',{'orders':orders})
 
 
 @login_required(login_url='adminlogin')
@@ -736,29 +723,55 @@ def my_order_view(request):
 
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
-def cancel_order_view(request, pk):
+def cancel_order_selection_view(request, pk):
     order = models.Order.objects.get(id=pk)
-    
-    # Always ask for a reason for all cancellable statuses
-    if request.method == 'POST':
-        reason = request.POST.get('reason')
-        order.cancellation_reason = reason
-        
-        # Logic for direct cancellation vs cancellation request
-        if order.status == 'Pending' or order.status == 'Order Confirmed':
-            order.status = 'Cancelled'
-            # Restore stock
-            for item in order.items.all():
-                item.product.stock += item.quantity
-                item.product.save()
-        elif order.status == 'Out for Delivery' or order.status == 'Delivered':
-            order.status = 'Cancellation Requested'
-        
-        order.save()
-        messages.success(request, 'Order status updated successfully.')
+    # Check if user owns the order
+    if order.customer.user != request.user:
+        messages.error(request, "Access denied.")
         return redirect('my-order')
     
-    return render(request, 'ecom/cancel_order_reason.html', {'order': order})
+    if request.method == 'POST':
+        selected_item_ids = request.POST.getlist('selected_items')
+        if not selected_item_ids:
+            messages.warning(request, "Please select at least one item to cancel.")
+            return redirect('cancel-order-selection', pk=pk)
+        
+        cancelled_count = 0
+        for item_id in selected_item_ids:
+            try:
+                item = models.OrderItem.objects.get(id=item_id, order=order)
+                if item.status not in ['Cancelled', 'Cancellation Requested', 'Return Requested', 'Delivered']:
+                    item.status = 'Cancelled'
+                    item.save()
+                    # Deduct from total amount
+                    order.total_amount = max(0, order.total_amount - (item.price * item.quantity))
+                    order.save()
+                    # Restore stock
+                    item.product.stock += item.quantity
+                    item.product.save()
+                    cancelled_count += 1
+            except models.OrderItem.DoesNotExist:
+                continue
+        
+        if cancelled_count > 0:
+            # Check if all items are now cancelled
+            all_items = order.items.all()
+            if all(i.status == 'Cancelled' for i in all_items):
+                order.status = 'Cancelled'
+                order.save()
+            messages.success(request, f"Successfully cancelled {cancelled_count} item(s).")
+        
+        return redirect('my-order')
+
+    # GET request: show selection page
+    items = order.items.filter(status__in=['Pending', 'Order Confirmed'])
+    return render(request, 'ecom/cancel_order_selection.html', {'order': order, 'items': items})
+
+@login_required(login_url='customerlogin')
+@user_passes_test(is_customer)
+def cancel_order_view(request, pk):
+    # This now just redirects to selection page or handles the whole order if needed
+    return redirect('cancel-order-selection', pk=pk)
  
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
@@ -829,9 +842,12 @@ def edit_profile_view(request):
 @user_passes_test(is_customer)
 def download_invoice_view(request, orderID):
     order = models.Order.objects.get(id=orderID)
+    # Only show non-cancelled items in the invoice
+    active_items = order.items.exclude(status='Cancelled')
     context = {
         'order': order,
         'customer': order.customer,
+        'items': active_items,
     }
     return render(request, 'ecom/download_invoice.html', context)
 

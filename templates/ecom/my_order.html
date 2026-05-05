@@ -394,7 +394,12 @@
                             <img src="{% static 'images/success.png' %}" class="product-img" alt="Product">
                         {% endif %}
                         <div class="product-info">
-                            <h4 class="product-name">{{ item.product.name }}</h4>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="product-name">{{ item.product.name }}</h4>
+                                {% if item.status == 'Cancelled' %}
+                                    <span class="status-badge status-cancelled" style="font-size: 10px; padding: 2px 8px;">Cancelled</span>
+                                {% endif %}
+                            </div>
                             <div class="product-meta">
                                 <span class="product-price">&#8377;{{ item.price }}</span>
                                 <span class="product-qty">Qty: {{ item.quantity }}</span>
@@ -413,7 +418,7 @@
                         </a>
                         
                         {% if order.status == 'Pending' or order.status == 'Order Confirmed' %}
-                            <a href="{% url 'cancel-order' order.id %}" class="btn-action btn-cancel">
+                            <a href="{% url 'cancel-order-selection' order.id %}" class="btn-action btn-cancel">
                                 <i class="fa-solid fa-xmark"></i> Cancel Order
                             </a>
                         {% elif order.can_be_returned %}

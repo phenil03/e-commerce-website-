@@ -2,212 +2,298 @@
 {% load static %}
 {% block content %}
 <style>
-  .panel-modern {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
-    margin-top: 1rem;
-  }
-  .panel-modern .panel-heading {
-    background: #fff;
-    padding: 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  .panel-modern .panel-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0;
-  }
-  .table-modern {
-    margin-bottom: 0;
-  }
-  .table-modern thead th {
-    background: #f8fafc;
-    border-top: none;
-    color: #64748b;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    padding: 1rem 1.5rem;
-  }
-  .table-modern tbody td {
-    padding: 1rem 1.5rem;
-    vertical-align: middle;
-    color: #334155;
-    font-size: 0.9375rem;
-    border-top: 1px solid #f1f5f9;
-  }
-  .table-modern tbody tr:hover {
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+  
+  body {
     background-color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
-  .product-img {
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  .badge-modern {
-    padding: 0.5em 0.75em;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.75rem;
-  }
-  .badge-pending { background-color: #ebf8ff; color: #3182ce; }
-  .badge-delivered { background-color: #f0fff4; color: #38a169; }
-  .badge-warning { background-color: #fffaf0; color: #dd6b20; }
-  .badge-danger { background-color: #fff5f5; color: #e53e3e; }
-  .badge-info { background-color: #ebf8ff; color: #3182ce; }
-  .badge-primary { background-color: #eef2ff; color: #4f46e5; }
 
-  .filter-container {
+  .order-container { 
+    max-width: 1100px; 
+    margin: 0 auto; 
+  }
+
+  .order-card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #eef2f6;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+  }
+
+  .order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  }
+
+  .order-header {
+    background: #fafbfc;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #f1f5f9;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    background: #fff;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
   }
-  .form-select-modern {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    color: #475569;
-    font-weight: 500;
-    outline: none;
-    transition: border-color 0.2s;
+
+  .order-id { 
+    font-size: 1.2rem; 
+    font-weight: 800; 
+    color: #1e293b; 
+    letter-spacing: -0.02em;
   }
-  .form-select-modern:focus {
-    border-color: #2563eb;
+
+  .order-date { 
+    font-size: 0.875rem; 
+    color: #64748b;
+    margin-top: 2px;
   }
-  .btn-export {
-    background: #059669;
-    color: white !important;
-    border-radius: 8px;
-    font-weight: 600;
-    padding: 0.5rem 1.25rem;
-    display: inline-flex;
+  
+  .item-row {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1.5rem;
+    background: #fff;
+  }
+
+  .item-row:last-child { border-bottom: none; }
+  
+  .product-img {
+    border-radius: 12px;
+    object-fit: cover;
+    background: #f8fafc;
+  }
+
+  .product-info { flex: 1; }
+  .product-name { 
+    font-weight: 700; 
+    color: #1e293b; 
+    font-size: 1rem;
+    margin-bottom: 0.25rem; 
+  }
+  .product-meta { 
+    font-size: 0.9rem; 
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .status-pending { background: #fffbeb; color: #9a3412; }
+  .status-confirmed { background: #eff6ff; color: #1e40af; }
+  .status-out { background: #fef2f2; color: #991b1b; }
+  .status-delivered { background: #f0fdf4; color: #166534; }
+  .status-cancelled { background: #fef2f2; color: #991b1b; }
+  .status-return { background: #fff7ed; color: #9a3412; }
+
+  .update-form select {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    outline: none;
     transition: all 0.2s;
   }
-  .btn-export:hover {
-    background: #047857;
-    transform: translateY(-1px);
+
+  .update-form select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
-  .btn-action {
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
+
+  .customer-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .total-price {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #3b82f6;
+  }
+
+  .btn-action-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    transition: all 0.2s;
   }
-  .btn-edit { background: #eff6ff; color: #2563eb; }
-  .btn-edit:hover { background: #dbeafe; }
-  .btn-delete { background: #fef2f2; color: #dc2626; }
-  .btn-delete:hover { background: #fee2e2; }
+
+  .btn-action-circle:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    transform: rotate(15deg);
+  }
+
+  .btn-delete-circle:hover {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+  }
+
+  .filter-bar {
+    background: #fff;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    border: 1px solid #eef2f6;
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 </style>
 
-<div class="container py-4">
-  <div class="filter-container">
-    <form method="GET" action="{% url 'admin-view-booking' %}" class="m-0">
-      <div class="d-flex align-items-center">
-        <label class="mr-3 mb-0 text-muted font-weight-600 small uppercase letter-spacing-05">Filter Status:</label>
-        <select name="status_filter" class="form-select-modern" onchange="this.form.submit()">
-          <option value="">All Orders</option>
-          <option value="Pending" {% if request.GET.status_filter == 'Pending' %}selected{% endif %}>Pending</option>
-          <option value="Order Confirmed" {% if request.GET.status_filter == 'Order Confirmed' %}selected{% endif %}>Confirmed</option>
-          <option value="Out for Delivery" {% if request.GET.status_filter == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
-          <option value="Delivered" {% if request.GET.status_filter == 'Delivered' %}selected{% endif %}>Delivered</option>
-        </select>
-      </div>
-    </form>
-
-    <a href="{% url 'export-orders-csv' %}" class="btn-export">
-      <i class="fa fa-download"></i> Export CSV
-    </a>
-  </div>
-
-  <div class="panel-modern">
-    <div class="panel-heading">
-      <h3 class="panel-title">Total Orders</h3>
+<div class="container py-5 order-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="font-weight-800 h2 mb-0" style="color: #1e293b; letter-spacing: -0.03em;">Order Management</h1>
+        <a href="{% url 'export-orders-csv' %}" class="btn btn-dark px-4 py-2" style="border-radius: 12px; font-weight: 700;">
+            <i class="fa fa-download mr-2"></i> Export Report
+        </a>
     </div>
-    <div class="table-responsive">
-      <table class="table table-modern">
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>Contact</th>
-            <th>Address</th>
-            <th>Product</th>
-            <th>Image</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Reason</th>
-            <th class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for product,customer,order in data %}
-          <tr>
-            {% for c in customer %}
-            <td><div style="font-weight: 600;">{{c.get_name}}</div></td>
-            <td>{{c.mobile}}</td>
-            <td><div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{order.address}}</div></td>
-            {% endfor %}
-            {% for p in product %}
-            <td>{{p.name}}</td>
-            <td>
-              {% if p.product_image %}
-                <img src="{{ p.product_image.url }}" class="product-img" height="40" width="40" />
-              {% else %}
-                <img src="{% static 'images/success.png' %}" class="product-img" height="40" width="40" />
-              {% endif %}
-            </td>
-            <td><div class="text-muted small">{{ order.order_date|date:"M j, Y" }}</div></td>
-            <td>
-              {% if order.status == 'Pending' %}
-                <span class="badge-modern badge-pending">{{order.status}}</span>
-              {% elif order.status == 'Order Confirmed' %}
-                <span class="badge-modern badge-primary">{{order.status}}</span>
-              {% elif order.status == 'Out for Delivery' or order.status == 'Return Requested' %}
-                <span class="badge-modern badge-warning">{{order.status}}</span>
-              {% elif order.status == 'Delivered' %}
-                <span class="badge-modern badge-delivered">{{order.status}}</span>
-              {% elif order.status == 'Cancelled' or order.status == 'Cancellation Requested' %}
-                <span class="badge-modern badge-danger">{{order.status}}</span>
-              {% else %}
-                <span class="badge-modern badge-info">{{order.status}}</span>
-              {% endif %}
-            </td>
-            <td>
-              {% if order.cancellation_reason or order.return_reason %}
-                <div class="text-danger small" style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                  {{ order.cancellation_reason }}{{ order.return_reason }}
+
+    <div class="filter-bar">
+        <div class="d-flex align-items-center">
+            <span class="mr-3 font-weight-700 small text-muted">FILTER BY STATUS</span>
+            <form method="GET" class="m-0">
+                <select name="status_filter" class="update-form" onchange="this.form.submit()" style="padding: 0.4rem 1rem; min-width: 180px;">
+                    <option value="">All Orders</option>
+                    {% for s_val, s_name in status_choices %}
+                    <option value="{{ s_val }}" {% if request.GET.status_filter == s_val %}selected{% endif %}>{{ s_name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+        <div class="text-muted small font-weight-600">
+            Total Results: {{ orders|length }}
+        </div>
+    </div>
+
+    {% for order in orders %}
+    <div class="order-card">
+        <div class="order-header">
+            <div>
+                <div class="order-id">Order ID: #{{ order.id }}</div>
+                <div class="order-date">Placed on {{ order.order_date|date:"F j, Y" }} at {{ order.order_date|date:"g:i a" }}</div>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="text-right mr-4 d-none d-md-block">
+                    <div class="customer-label">Customer</div>
+                    <div class="font-weight-700 text-dark">{{ order.customer.get_name }}</div>
                 </div>
-              {% else %}
-                <span class="text-muted small">-</span>
-              {% endif %}
-            </td>
-            <td class="text-center">
-              <a href="{% url 'update-order' order.id %}" class="btn-action btn-edit mr-2" title="Update Status"><i class="fa fa-refresh"></i></a>
-              <a href="{% url 'delete-order' order.id %}" class="btn-action btn-delete" title="Delete"><i class="fa fa-trash"></i></a>
-            </td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'update-order' order.id %}" class="btn-action-circle mr-2" title="Order Details">
+                        <i class="fa fa-external-link-alt"></i>
+                    </a>
+                    <a href="{% url 'delete-order' order.id %}" class="btn-action-circle btn-delete-circle" onclick="return confirm('Delete this entire order?')" title="Delete Order">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4">
+            <div class="row mb-4 px-3">
+                <div class="col-md-3">
+                    <div class="customer-label">Contact Information</div>
+                    <div class="font-weight-600 text-dark">{{ order.customer.mobile }}</div>
+                    <div class="small text-muted">{{ order.customer.user.email }}</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="customer-label">Shipping Address</div>
+                    <div class="font-weight-600 text-dark" style="line-height: 1.4;">{{ order.address }}</div>
+                </div>
+                <div class="col-md-3 text-md-right">
+                    <div class="customer-label">Invoice Total</div>
+                    <div class="total-price">₹{{ order.total_amount }}</div>
+                    <div class="small text-muted font-weight-600">{{ order.payment_method|upper }} Payment</div>
+                </div>
+            </div>
+
+            <div class="bg-light p-1" style="border-radius: 12px;">
+                {% for item in order.items.all %}
+                <div class="item-row" style="background: transparent; border-bottom: 1px solid rgba(0,0,0,0.03);">
+                    <img src="{% if item.product.product_image %}{{ item.product.product_image.url }}{% else %}{% static 'images/success.png' %}{% endif %}" 
+                         class="product-img" width="56" height="56">
+                    
+                    <div class="product-info">
+                        <div class="product-name">{{ item.product.name }}</div>
+                        <div class="product-meta">₹{{ item.price }} <span class="mx-2 text-silver">&bull;</span> Qty: {{ item.quantity }}</div>
+                    </div>
+
+                    <div class="text-center" style="min-width: 140px;">
+                        {% if item.status == 'Pending' %}
+                            <span class="status-badge status-pending">Pending</span>
+                        {% elif item.status == 'Order Confirmed' %}
+                            <span class="status-badge status-confirmed">Confirmed</span>
+                        {% elif item.status == 'Delivered' %}
+                            <span class="status-badge status-delivered">Delivered</span>
+                        {% elif item.status == 'Cancelled' %}
+                            <span class="status-badge status-cancelled">Cancelled</span>
+                        {% elif item.status == 'Out for Delivery' %}
+                            <span class="status-badge status-out">On the Way</span>
+                        {% else %}
+                            <span class="status-badge status-return">{{ item.status }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="update-form">
+                        <form action="{% url 'update-order-item-status' item.id %}" method="POST" class="m-0">
+                            {% csrf_token %}
+                            <select name="status" onchange="this.form.submit()" style="background-color: white;">
+                                {% for s_val, s_name in status_choices %}
+                                <option value="{{ s_val }}" {% if item.status == s_val %}selected{% endif %}>{{ s_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if order.cancellation_reason or order.return_reason %}
+            <div class="mt-3 p-3 bg-red-50" style="background-color: #fff1f2; border-radius: 12px; border: 1px solid #ffe4e6;">
+                <div class="d-flex align-items-center">
+                    <i class="fa fa-info-circle text-danger mr-2"></i>
+                    <span class="small font-weight-700 text-danger uppercase">Resolution Note:</span>
+                </div>
+                <p class="mb-0 mt-1 small text-dark font-weight-500">{{ order.cancellation_reason }}{{ order.return_reason }}</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
-  </div>
+    {% empty %}
+    <div class="text-center py-5">
+        <i class="fa fa-shopping-bag fa-4x text-light mb-4"></i>
+        <h3 class="font-weight-700">No bookings yet</h3>
+        <p class="text-muted">New orders will appear here for processing.</p>
+    </div>
+    {% endfor %}
 </div>
-{% endblock content %}
-
-
+{% endblock %}

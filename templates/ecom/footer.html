@@ -1,90 +1,75 @@
-<!DOCTYPE html>
-<html>
+<!-- Font Awesome 4.7 for Icons (Proven to work in this environment) -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<head>
-
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-  <style>
-    /*---------------------------------------
-   Social section
------------------------------------------*/
-    footer {
-      padding: 0px 0px 0px 0px;
-      background-color: black;
-      margin: 0px;
-  
+<style>
+    .site-footer {
+        background-color: #000000;
+        padding: 40px 0 20px 0;
+        margin-top: 50px;
+        color: #ffffff;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
     }
 
-    .fa {
-      padding: 20px;
-      font-size: 23px;
-      width: 60px;
-      text-align: center;
-      text-decoration: none;
-      margin: 5px 2px;
-      border-radius: 50%;
+    .footer-social-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
     }
 
-    .fa:hover {
-      opacity: 0.5;
-      text-decoration: none;
+    .footer-social-links a {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        text-decoration: none;
+        font-size: 24px;
+        transition: all 0.3s ease;
+        color: #ffffff;
     }
 
-    .fa-facebook {
-      background: #3B5998;
-      color: white;
-      margin-top: 30px;
+    .footer-social-links a:hover {
+        transform: translateY(-5px);
+        opacity: 0.8;
     }
 
-    .fa-whatsapp {
-      background: #25d366;
-      color: white;
+    .bg-facebook { background-color: #3B5998; }
+    .bg-whatsapp { background-color: #25d366; }
+    .bg-instagram { background-color: #125688; }
+    .bg-twitter { background-color: #55ACEE; }
+
+    .footer-content {
+        text-align: center;
     }
 
-    .fa-twitter {
-      background: #55ACEE;
-      color: white;
+    .footer-content p {
+        margin: 5px 0;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.6;
     }
 
-    .fa-instagram {
-      background: #125688;
-      color: white;
+    .footer-copyright {
+        font-size: 14px !important;
+        opacity: 0.8;
+        margin-top: 10px !important;
     }
+</style>
 
-    p {
-      text-align: center;
-
-    }
-  </style>
-</head>
-
-<footer>
-
-  <p>
-    <a href="#" class="fa fa-facebook"></a>
-    <a href="#" class="fa fa-whatsapp"></a>
-    <a href="#" class="fa fa-instagram"></a>
-    <a href="#" class="fa fa-twitter"></a>
-  </p>
-
-  <br>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12 col-sm-12">
-        <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-          <p>Made in India <br>
-            Copyright &copy; 2020 Ecommerce </p>
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-social-links">
+            <a href="#" class="bg-facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="bg-whatsapp"><i class="fa fa-whatsapp"></i></a>
+            <a href="#" class="bg-instagram"><i class="fa fa-instagram"></i></a>
+            <a href="#" class="bg-twitter"><i class="fa fa-twitter"></i></a>
         </div>
-      </div>
+
+        <div class="footer-content">
+            <p>Made in India</p>
+            <p class="footer-copyright">Copyright &copy; 2026 Ecommerce</p>
+        </div>
     </div>
-  </div>
 </footer>
-<!--
--->
-
-</html>
-
-

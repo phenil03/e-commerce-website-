@@ -48,7 +48,7 @@
                 <th>Price</th>
                 <th>Total</th>
             </tr>
-            {% for item in order.items.all %}
+            {% for item in items %}
             <tr>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.quantity }}</td>

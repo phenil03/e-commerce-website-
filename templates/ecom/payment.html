@@ -290,7 +290,7 @@
                 <div class="form-group">
                     <label class="form-label">Card Number</label>
                     <div class="input-wrapper">
-                        <input type="tel" class="form-input" id="cardNumber" name="cardNumber" placeholder="0000 0000 0000 0000" maxlength="16" required>
+                        <input type="tel" class="form-input" id="cardNumber" name="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
                         <i class="fas fa-lock input-icon"></i>
                     </div>
                 </div>
@@ -389,7 +389,7 @@ document.getElementById("paymentForm").addEventListener("submit", function(event
     var method = document.querySelector('input[name="payment_method"]:checked').value;
     if (method === 'cod') return;
 
-    const cardNumber = document.getElementById("cardNumber").value.trim();
+    const cardNumber = document.getElementById("cardNumber").value.replace(/\s/g, '');
     const cvv = document.getElementById("cvCode").value.trim();
     const mm = document.getElementById("expityMonth").value.trim();
     const yyyy = document.getElementById("expityYear").value.trim();
@@ -417,6 +417,12 @@ document.getElementById("paymentForm").addEventListener("submit", function(event
         event.preventDefault();
         return;
     }
+});
+
+document.getElementById('cardNumber').addEventListener('input', function (e) {
+    let value = e.target.value.replace(/[^\d]/g, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || '';
+    e.target.value = formattedValue;
 });
 </script>
 {% endblock content %}

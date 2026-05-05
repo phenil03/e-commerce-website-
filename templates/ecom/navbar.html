@@ -233,12 +233,9 @@
                  <a class="nav-link-item" href="/logout">Logout</a>
             {% endif %}
 
-            <a class="cart-btn" href="/cart">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span>Cart</span>
-                {% if product_count_in_cart is not None %}
-                    <span class="cart-badge">{{ product_count_in_cart }}</span>
-                {% endif %}
+            <a class="cart-btn" href="/adminlogin">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Admin Login</span>
             </a>
         </div>
     </div>

@@ -1,6 +1,5 @@
 <html>
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/color_palette_original.css' %}">
 <head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 <!-- jQuery library -->
@@ -23,38 +22,17 @@
       flex: 1 0 auto;
   }
 
-  /* Social section */
-  footer {
-    padding: 0px 0px 0px 0px;
-    background-color: #2F4550;
-    margin: 0px;
-    flex-shrink: 0;
-  }
-
-  #ftr {
-    padding: 20px;
-  }
-
-  .fa {
-    font-size: 23px;
-    width: 60px;
-    text-align: center;
-    text-decoration: none;
-    margin: 5px 2px;
-    border-radius: 50%;
-  }
-
-  .fa:hover {
-    opacity: 0.5;
-    text-decoration: none;
-  }
-
-  .fa-facebook { background: #3B5998; color: white; margin-top: 30px; }
-  .fa-whatsapp { background: #25d366; color: white; }
-  .fa-twitter { background: #55ACEE; color: white; }
-  .fa-instagram { background: #125688; color: white; }
-
   p { text-align: center; }
+
+  /* Remove default focus outlines/boxes from clickable elements */
+  *:focus {
+      outline: none !important;
+  }
+  a:focus, button:focus, .btn:focus, .nav-link-item:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      text-decoration: none !important;
+  }
 </style>
 
 </head>
@@ -85,26 +63,7 @@
 {% endblock content %}
 <!-- content end-->
 </div>
-<footer>
-  <p>
-    <a id="ftr" href="#" class="fa fa-facebook"></a>
-    <a id="ftr" href="#" class="fa fa-whatsapp"></a>
-    <a id="ftr" href="#" class="fa fa-instagram"></a>
-    <a id="ftr" href="#" class="fa fa-twitter"></a>
-  </p>
-
-  <br>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12 col-sm-12">
-        <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-          <p>Made in India <br>
-            Copyright &copy; 2020 Ecommerce </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+  {% include "ecom/footer.html" %}
 {% block scripts %}
 {% endblock %}
 <script>

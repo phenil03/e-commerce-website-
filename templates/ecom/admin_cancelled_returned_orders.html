@@ -98,23 +98,31 @@
           <tr>
             <th>Customer</th>
             <th>Contact</th>
-            <th>Product</th>
+            <th>Products</th>
             <th>Status</th>
             <th>Reason</th>
             <th class="text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {% for product,customer,order in data %}
+          {% for order in orders %}
           <tr>
-            {% for c in customer %}
-            <td><div style="font-weight: 600;">{{c.get_name}}</div></td>
-            <td>{{c.mobile}}</td>
-            {% endfor %}
+            <td>
+                <div style="font-weight: 600;">{{ order.customer.get_name }}</div>
+                <div class="small text-muted">ID: #{{ order.id }}</div>
+            </td>
+            <td>{{ order.customer.mobile }}</td>
             
-            {% for p in product %}
-            <td>{{p.name}}</td>
-            {% endfor %}
+            <td>
+                <div class="small">
+                    {% for item in order.items.all %}
+                        <div class="mb-1">
+                            <span class="font-weight-600">{{ item.product.name }}</span> 
+                            <span class="text-muted">(x{{ item.quantity }})</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </td>
 
             <td>
               {% if order.status == 'Cancelled' or order.status == 'Cancellation Requested' %}
