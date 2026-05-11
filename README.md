@@ -78,10 +78,14 @@ pip install -r requirement.txt
 python manage.py migrate
 ```
 
-### 6. Create Admin Account (Optional)
+### 6. Populate Data (Recommended)
+To get default admin and customer accounts along with some sample products, run the seed script:
 ```bash
-python manage.py createsuperuser
+python seed_data.py
 ```
+This will create:
+- **Admin**: username `admin`, password `admin123`
+- **Customer**: username `customer`, password `customer123`
 
 ### 7. Run the Application
 ```bash
